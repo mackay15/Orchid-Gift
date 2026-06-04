@@ -1,0 +1,286 @@
+/* assets/css/style.css - Premium Orchid Style Guide and Overrides */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+
+:root {
+    --primary-color: #5a189a;
+    --primary-hover: #7b2cbf;
+    --primary-light: #9d4edd;
+    --secondary-color: #ff85a1;
+    --accent-color: #f72585;
+    --dark-bg: #0c0817;
+    --dark-card: #150f28;
+    --light-bg: #fdfaf6;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(90, 24, 154, 0.15);
+    --text-primary: #2d1b4e;
+    --text-secondary: #6e5e8c;
+    --text-light: #f3ecf9;
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --neon-glow: 0 0 15px rgba(123, 44, 191, 0.4);
+    --card-shadow: 0 10px 30px rgba(90, 24, 154, 0.06);
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--light-bg);
+    color: var(--text-primary);
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .brand-font {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--card-shadow);
+    border-radius: 16px;
+}
+
+.glass-nav {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(90, 24, 154, 0.1);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Premium Buttons */
+.btn-orchid {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    padding: 10px 24px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: var(--transition-smooth);
+    box-shadow: 0 4px 15px rgba(90, 24, 154, 0.2);
+}
+
+.btn-orchid:hover {
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(90, 24, 154, 0.4);
+    background: linear-gradient(135deg, var(--primary-hover), var(--primary-light));
+}
+
+.btn-orchid-outline {
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 30px;
+    padding: 8px 22px;
+    font-weight: 500;
+    transition: var(--transition-smooth);
+}
+
+.btn-orchid-outline:hover {
+    background: var(--primary-color);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(90, 24, 154, 0.2);
+}
+
+/* Glowing Cards */
+.orchid-card {
+    border: none;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    transition: var(--transition-smooth);
+    overflow: hidden;
+}
+
+.orchid-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(90, 24, 154, 0.12), var(--neon-glow);
+}
+
+.orchid-card .card-img-top {
+    transition: var(--transition-smooth);
+    object-fit: cover;
+}
+
+.orchid-card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+/* Hero Section */
+.hero-banner {
+    background: radial-gradient(circle at 10% 20%, rgba(90, 24, 154, 0.05) 0%, rgba(224, 170, 255, 0.15) 90.1%);
+    position: relative;
+    overflow: hidden;
+    padding: 100px 0;
+}
+
+.hero-banner::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    background: radial-gradient(var(--secondary-color), transparent 70%);
+    opacity: 0.15;
+    z-index: 0;
+}
+
+/* Custom Nav links */
+.navbar-brand {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--primary-color) !important;
+}
+
+.nav-link {
+    color: var(--text-primary) !important;
+    font-weight: 500;
+    transition: var(--transition-smooth);
+    padding: 8px 16px !important;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--primary-hover) !important;
+    transform: scale(1.03);
+}
+
+/* Custom Form elements */
+.form-control {
+    border-radius: 10px;
+    border: 1px solid #dcd7e7;
+    padding: 10px 15px;
+    transition: var(--transition-smooth);
+}
+
+.form-control:focus {
+    border-color: var(--primary-hover);
+    box-shadow: 0 0 0 0.25rem rgba(123, 44, 191, 0.15);
+}
+
+/* POS Interface Styles */
+.pos-container {
+    background-color: #f1ecf6;
+    min-height: calc(100vh - 60px);
+}
+
+.pos-product-card {
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    border-radius: 12px;
+    border: 1px solid rgba(90, 24, 154, 0.08);
+}
+
+.pos-product-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(90, 24, 154, 0.1);
+}
+
+.pos-sidebar {
+    height: calc(100vh - 100px);
+    position: sticky;
+    top: 80px;
+    display: flex;
+    flex-direction: column;
+}
+
+.pos-cart-list {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+/* Receipt Thermal Styling */
+.receipt-box {
+    max-width: 400px;
+    background: #fff;
+    margin: 30px auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 4px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.receipt-header {
+    text-align: center;
+    border-bottom: 1px dashed #333;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+
+.receipt-divider {
+    border-top: 1px dashed #333;
+    margin: 10px 0;
+}
+
+/* Dashboard Badges & Stats */
+.stat-card {
+    border: none;
+    border-radius: 16px;
+    color: #fff;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    right: -20px;
+    width: 100px;
+    height: 100px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+}
+
+.bg-orchid-grad {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+}
+
+.bg-rose-grad {
+    background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+}
+
+.bg-ocean-grad {
+    background: linear-gradient(135deg, #00b4d8, #0077b6);
+}
+
+/* Footer Styling */
+footer {
+    background-color: var(--dark-bg);
+    color: var(--text-light);
+    border-top: 5px solid var(--primary-color);
+}
+
+footer a {
+    color: var(--primary-light);
+    text-decoration: none;
+    transition: var(--transition-smooth);
+}
+
+footer a:hover {
+    color: var(--secondary-color);
+    padding-left: 3px;
+}
+
+/* Rating Stars */
+.rating-stars {
+    color: #ffb703;
+}
+
+.rating-select-input {
+    font-size: 1.5rem;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.rating-select-input.active {
+    color: #ffb703;
+}

@@ -1,0 +1,26 @@
+# ORCHID - Git Ignore Rules
+
+# Ignore sensitive config overrides
+includes/config.php
+
+# Ignore XAMPP error logs
+*.log
+error_log
+
+# Ignore OS junk files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Ignore IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Ignore uploaded media (if any)
+assets/uploads/
+
+# Ignore composer vendor (if added later)
+vendor/
+composer.lock
