@@ -139,13 +139,19 @@ $categories = $pdo->query("SELECT * FROM categories")->fetchAll();
                                             <span class="small text-muted">Stock: <b><?php echo $prod['stock_quantity']; ?></b></span>
                                         </div>
                                         
-                                        <div class="d-flex gap-2">
-                                            <a href="product.php?id=<?php echo $prod['product_id']; ?>" class="btn btn-orchid-outline btn-sm w-50"><i class="bi bi-eye"></i> Details</a>
-                                            
-                                            <form action="shop.php?category=<?php echo $category_filter; ?>&search=<?php echo urlencode($search_filter); ?>&sort=<?php echo $sort_filter; ?>" method="POST" class="w-50">
+                                        <div class="d-flex gap-2 align-items-stretch">
+                                            <a href="product.php?id=<?php echo $prod['product_id']; ?>"
+                                               class="btn btn-orchid-outline btn-sm flex-fill d-flex align-items-center justify-content-center gap-1"
+                                               style="padding-top: 8px; padding-bottom: 8px;">
+                                                <i class="bi bi-eye"></i> Details
+                                            </a>
+                                            <form action="shop.php?category=<?php echo $category_filter; ?>&search=<?php echo urlencode($search_filter); ?>&sort=<?php echo $sort_filter; ?>" method="POST" class="flex-fill d-flex">
                                                 <input type="hidden" name="action" value="add_to_cart">
                                                 <input type="hidden" name="product_id" value="<?php echo $prod['product_id']; ?>">
-                                                <button type="submit" class="btn btn-orchid btn-sm w-100" <?php echo $prod['stock_quantity'] <= 0 ? 'disabled' : ''; ?>>
+                                                <button type="submit"
+                                                        class="btn btn-orchid btn-sm w-100 d-flex align-items-center justify-content-center gap-1"
+                                                        style="padding-top: 8px; padding-bottom: 8px;"
+                                                        <?php echo $prod['stock_quantity'] <= 0 ? 'disabled' : ''; ?>>
                                                     <i class="bi bi-cart-plus"></i> Add
                                                 </button>
                                             </form>

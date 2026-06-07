@@ -238,12 +238,12 @@ if (count($reviews) > 0) {
                         <!-- Rating Choice -->
                         <div class="mb-3">
                             <label class="form-label text-muted small fw-bold">Your Rating</label>
-                            <div class="d-flex gap-2">
+                            <div class="d-flex gap-2" id="stars-container" onmouseleave="resetStars()">
                                 <?php for($i = 1; $i <= 5; $i++): ?>
                                     <div class="form-check form-check-inline m-0">
                                         <input class="form-check-input d-none" type="radio" name="rating" id="rate<?php echo $i; ?>" value="<?php echo $i; ?>" <?php echo $i === 5 ? 'checked' : ''; ?>>
-                                        <label class="form-check-label fs-4" for="rate<?php echo $i; ?>" style="cursor: pointer;" onclick="highlightStars(<?php echo $i; ?>)">
-                                            <i class="bi bi-star-fill text-muted star-select" id="star-icon-<?php echo $i; ?>" style="color: #ffb703 !important;"></i>
+                                        <label class="form-check-label fs-4" for="rate<?php echo $i; ?>" style="cursor: pointer;" onclick="setRating(<?php echo $i; ?>)" onmouseenter="highlightStars(<?php echo $i; ?>)">
+                                            <i class="bi bi-star-fill star-select text-secondary opacity-25" id="star-icon-<?php echo $i; ?>"></i>
                                         </label>
                                     </div>
                                 <?php endfor; ?>
@@ -270,20 +270,37 @@ if (count($reviews) > 0) {
 </div>
 
 <script>
+    let currentRating = 5;
+
     // Initialise star selector colors on load
     document.addEventListener("DOMContentLoaded", () => {
-        highlightStars(5);
+        setRating(5);
     });
 
     function highlightStars(rating) {
         for (let i = 1; i <= 5; i++) {
             const star = document.getElementById("star-icon-" + i);
             if (i <= rating) {
-                star.className = "bi bi-star-fill text-warning";
+                star.style.setProperty('color', '#ffb703', 'important');
+                star.style.setProperty('opacity', '1', 'important');
             } else {
-                star.className = "bi bi-star-fill text-secondary opacity-25";
+                star.style.setProperty('color', '#6c757d', 'important');
+                star.style.setProperty('opacity', '0.25', 'important');
             }
         }
+    }
+
+    function setRating(rating) {
+        currentRating = rating;
+        const input = document.getElementById("rate" + rating);
+        if (input) {
+            input.checked = true;
+        }
+        highlightStars(rating);
+    }
+
+    function resetStars() {
+        highlightStars(currentRating);
     }
 </script>
 

@@ -1,6 +1,13 @@
 <?php
 // includes/footer.php - Global Page Footer
-$base = "/ORCHID";
+// Base URL computed dynamically for server environment compatibility
+$project_root = str_replace('\\', '/', dirname(__DIR__));
+$doc_root = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']);
+$base = '';
+if (strcasecmp(substr($project_root, 0, strlen($doc_root)), $doc_root) === 0) {
+    $base = substr($project_root, strlen($doc_root));
+}
+$base = str_replace('\\', '/', rtrim($base, '/'));
 ?>
     </main> <!-- End of main tag -->
     
@@ -8,8 +15,14 @@ $base = "/ORCHID";
         <div class="container">
             <div class="row g-4 mb-4">
                 <div class="col-lg-4 col-md-6">
-                    <h5 class="text-white mb-3 brand-font"><i class="bi bi-flower1 me-1 text-secondary"></i> ORCHID</h5>
-                    <p class="text-muted small">Where Every Gift Tells a Story. We customize and deliver memorable gifts, exquisite flowers, luxury hampers, and unique personalized items for all occasions.</p>
+                    <div class="d-flex align-items-start gap-3 mb-3">
+                        <img src="<?php echo $base; ?>/assets/orchid_logo.png" alt="Orchid Logo" class="brand-logo">
+                        <div>
+                            <h5 class="mb-1 brand-font">ORCHID</h5>
+                            <small class="text-muted">Gift & More Boutique</small>
+                        </div>
+                    </div>
+                    <p class="text-muted small">Where every gift feels personal. We create luxurious gift experiences with flowers, custom hampers, designer treats, and keepsakes for every occasion.</p>
                     <div class="d-flex gap-3 mt-3">
                         <a href="#" class="text-muted fs-5"><i class="bi bi-facebook"></i></a>
                         <a href="#" class="text-muted fs-5"><i class="bi bi-instagram"></i></a>

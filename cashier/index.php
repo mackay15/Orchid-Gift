@@ -159,6 +159,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
     }
     
+    // If it's an AJAX request, return JSON state
+    $is_ajax = isset($_POST['ajax']) || (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest');
+    if ($is_ajax) {
+        header('Content-Type: application/json');
+        if (!empty($error)) {
+            echo json_encode(['success' => false, 'error' => $error]);
+        } else {
+            echo json_encode(['success' => true]);
+        }
+        exit();
+    }
+    
     // Quick reload
     echo "<script>window.location.href = window.location.href;</script>";
     exit();
@@ -204,7 +216,7 @@ require_once __DIR__ . '/../includes/header.php';
             </div>
         <?php endif; ?>
 
-        <div class="row g-4">
+        <div class="row g-4" id="pos-terminal-row">
             <!-- Left Side: POS Product Catalog & Filters -->
             <div class="col-lg-7">
                 <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
@@ -290,7 +302,7 @@ require_once __DIR__ . '/../includes/header.php';
                                             <form action="index.php" method="POST" class="d-inline">
                                                 <input type="hidden" name="action" value="update_qty">
                                                 <input type="hidden" name="product_id" value="<?php echo $item['product_id']; ?>">
-                                                <input type="number" name="quantity" value="<?php echo $item['quantity']; ?>" min="0" class="form-control form-control-sm text-center px-1" style="max-width: 50px;" onchange="this.form.submit()">
+                                                <input type="number" name="quantity" value="<?php echo $item['quantity']; ?>" min="0" class="form-control form-control-sm text-center px-1" style="max-width: 50px;" onchange="if (typeof this.form.requestSubmit === 'function') { this.form.requestSubmit(); } else { this.form.submit(); }">
                                             </form>
                                             
                                             <span class="fw-bold small text-primary">$<?php echo number_format($item['total_price'], 2); ?></span>
@@ -359,6 +371,57 @@ require_once __DIR__ . '/../includes/header.php';
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Intercept standard POS operations via event delegation
+    document.addEventListener('submit', function(e) {
+        const form = e.target;
+        const actionInput = form.querySelector('input[name="action"]');
+        
+        if (actionInput && ['add', 'update_qty', 'remove', 'clear'].includes(actionInput.value)) {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            formData.append('ajax', '1');
+            
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    refreshTerminal();
+                } else {
+                    alert(data.error || 'An error occurred.');
+                }
+            })
+            .catch(err => {
+                console.error('POS Cart Error:', err);
+                alert('Connection error. Could not update POS cart.');
+            });
+        }
+    });
+
+    function refreshTerminal() {
+        // Fetch current page content to extract the updated terminal row
+        fetch(window.location.href)
+        .then(response => response.text())
+        .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const freshRow = doc.getElementById('pos-terminal-row');
+            const targetRow = document.getElementById('pos-terminal-row');
+            
+            if (freshRow && targetRow) {
+                targetRow.innerHTML = freshRow.innerHTML;
+            }
+        })
+        .catch(err => console.error('Failed to refresh POS terminal:', err));
+    }
+});
+</script>
 
 <?php
 require_once __DIR__ . '/../includes/footer.php';

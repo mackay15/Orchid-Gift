@@ -5,8 +5,14 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 require_once __DIR__ . '/auth.php';
 
-// Base URL for XAMPP deployment
-$base = "/ORCHID";
+// Base URL computed dynamically for server environment compatibility
+$project_root = str_replace('\\', '/', dirname(__DIR__));
+$doc_root = str_replace('\\', '/', $_SERVER['DOCUMENT_ROOT']);
+$base = '';
+if (strcasecmp(substr($project_root, 0, strlen($doc_root)), $doc_root) === 0) {
+    $base = substr($project_root, strlen($doc_root));
+}
+$base = str_replace('\\', '/', rtrim($base, '/'));
 
 // Count cart items
 $cart_count = 0;
@@ -34,10 +40,12 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
 <!-- Dynamic Navbar -->
 <nav class="navbar navbar-expand-lg glass-nav sticky-top py-3">
     <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="<?php echo $base; ?>/index.php">
-            <i class="bi bi-flower1 me-2 text-primary"></i>
-            <span class="brand-font fw-bold">ORCHID</span>
-            <small class="fs-6 ms-2 text-secondary d-none d-sm-inline">| Gift & More</small>
+        <a class="navbar-brand d-flex align-items-center gap-3" href="<?php echo $base; ?>/index.php">
+            <img src="<?php echo $base; ?>/assets/orchid_logo.png" alt="Orchid Gift & More Logo" class="brand-logo">
+            <div class="d-flex flex-column">
+                <span class="brand-text">ORCHID</span>
+                <small class="text-muted small">Gift & More Boutique</small>
+            </div>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
