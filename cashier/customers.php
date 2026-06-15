@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         // Create customer with default password 'customer123'
         $regResult = registerUser($username, $email, 'customer123', $fullName);
         if ($regResult === true) {
+            logCashierAction('Register Customer', "Registered new customer: " . $fullName . " (@" . $username . ")");
             $success = "Customer account registered successfully! Password is 'customer123'.";
             header("Location: index.php");
             exit();
@@ -47,6 +48,8 @@ $query .= " ORDER BY created_at DESC";
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);
 $customers = $stmt->fetchAll();
+
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="container py-5">

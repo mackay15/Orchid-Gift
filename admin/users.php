@@ -70,6 +70,8 @@ $query .= " ORDER BY role ASC, created_at DESC";
 $stmt = $pdo->prepare($query);
 $stmt->execute($params);
 $users = $stmt->fetchAll();
+
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="container py-5">

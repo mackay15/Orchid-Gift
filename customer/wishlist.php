@@ -64,7 +64,7 @@ require_once __DIR__ . '/../includes/header.php';
                 <div class="col-lg-3 col-md-4 col-sm-6">
                     <div class="card orchid-card h-100 d-flex flex-column justify-content-between">
                         <div class="position-relative overflow-hidden" style="height: 200px;">
-                            <img src="<?php echo htmlspecialchars($item['image_url']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" class="card-img-top w-100 h-100" style="object-fit: cover;">
+                            <img src="<?php echo htmlspecialchars(getProductImage($item['image_url'])); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" class="card-img-top w-100 h-100" style="object-fit: cover;">
                             <span class="position-absolute top-0 end-0 bg-primary text-white text-xs px-2 py-1 m-3 rounded-pill" style="font-size: 0.75rem;">
                                 <?php echo htmlspecialchars($item['category_name']); ?>
                             </span>
@@ -72,7 +72,7 @@ require_once __DIR__ . '/../includes/header.php';
                         <div class="card-body d-flex flex-column justify-content-between">
                             <div>
                                 <h6 class="card-title text-dark fw-bold mb-1"><?php echo htmlspecialchars($item['name']); ?></h6>
-                                <p class="text-muted small mb-3">$<?php echo number_format($item['price'], 2); ?></p>
+                                <p class="text-muted small mb-3"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($item['price'], 2); ?></p>
                             </div>
                             
                             <div class="d-flex gap-2">

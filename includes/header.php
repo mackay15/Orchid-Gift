@@ -21,6 +21,18 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
         $cart_count += $qty;
     }
 }
+
+// Helper function to resolve product image paths (local upload or remote URL)
+function getProductImage($url) {
+    global $base;
+    if (empty($url)) {
+        return 'https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=600&q=80';
+    }
+    if (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0 || strpos($url, 'data:') === 0) {
+        return $url;
+    }
+    return $base . '/' . ltrim($url, '/');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -44,7 +56,7 @@ if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
             <img src="<?php echo $base; ?>/assets/orchid_logo.png" alt="Orchid Gift & More Logo" class="brand-logo">
             <div class="d-flex flex-column">
                 <span class="brand-text">ORCHID</span>
-                <small class="text-muted small">Gift & More Boutique</small>
+                <small class="text-muted small">Gift & More</small>
             </div>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

@@ -90,4 +90,16 @@ function registerUser($username, $email, $password, $fullName) {
     
     return true;
 }
+
+function logCashierAction($action, $details = '') {
+    global $pdo;
+    if (isLoggedIn() && isset($_SESSION['user_id'])) {
+        $userId = $_SESSION['user_id'];
+        $role = $_SESSION['role'] ?? '';
+        if ($role === 'cashier' || $role === 'admin') {
+            $stmt = $pdo->prepare("INSERT INTO cashier_logs (cashier_id, action, details) VALUES (?, ?, ?)");
+            $stmt->execute([$userId, $action, $details]);
+        }
+    }
+}
 ?>

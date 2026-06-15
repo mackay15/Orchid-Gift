@@ -116,7 +116,7 @@ require_once __DIR__ . '/../includes/header.php';
                                     <tr>
                                         <td><b>#<?php echo $o['order_id']; ?></b></td>
                                         <td class="small text-muted"><?php echo date('M d, Y', strtotime($o['created_at'])); ?></td>
-                                        <td class="fw-bold text-primary">$<?php echo number_format($o['total_amount'], 2); ?></td>
+                                        <td class="fw-bold text-primary"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($o['total_amount'], 2); ?></td>
                                         <td><span class="badge <?php echo $status_badge; ?>"><?php echo $o['order_status']; ?></span></td>
                                         <td><a href="orders.php?view_id=<?php echo $o['order_id']; ?>" class="btn btn-link btn-sm text-primary p-0 text-decoration-none"><i class="bi bi-receipt me-1"></i> View</a></td>
                                     </tr>

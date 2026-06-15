@@ -120,7 +120,7 @@ $categories = $pdo->query("SELECT * FROM categories")->fetchAll();
                         <div class="col-md-4 col-sm-6">
                             <div class="card orchid-card h-100 d-flex flex-column justify-content-between">
                                 <div class="position-relative overflow-hidden" style="height: 220px;">
-                                    <img src="<?php echo htmlspecialchars($prod['image_url']); ?>" class="card-img-top w-100 h-100" alt="<?php echo htmlspecialchars($prod['name']); ?>">
+                                    <img src="<?php echo htmlspecialchars(getProductImage($prod['image_url'])); ?>" class="card-img-top w-100 h-100" alt="<?php echo htmlspecialchars($prod['name']); ?>">
                                     <span class="position-absolute top-0 end-0 bg-primary text-white text-xs px-2 py-1 m-3 rounded-pill" style="font-size: 0.75rem;">
                                         <?php echo htmlspecialchars($prod['category_name']); ?>
                                     </span>
@@ -135,7 +135,7 @@ $categories = $pdo->query("SELECT * FROM categories")->fetchAll();
                                     
                                     <div>
                                         <div class="d-flex justify-content-between align-items-center mb-3">
-                                            <span class="fs-5 fw-bold text-primary">$<?php echo number_format($prod['price'], 2); ?></span>
+                                            <span class="fs-5 fw-bold text-primary"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($prod['price'], 2); ?></span>
                                             <span class="small text-muted">Stock: <b><?php echo $prod['stock_quantity']; ?></b></span>
                                         </div>
                                         

@@ -80,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     
     elseif ($action === 'clear') {
         $_SESSION['pos_cart'] = [];
+        logCashierAction('Clear POS Cart', 'Cleared POS transaction cart.');
     }
     
     elseif ($action === 'checkout') {
@@ -147,6 +148,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
                 
                 $pdo->commit();
                 $_SESSION['pos_cart'] = [];
+                
+                logCashierAction('POS Checkout', "Completed POS checkout for walk-in order #$orderId. Total amount: " . CURRENCY_SYMBOL . number_format($grand_total, 2));
                 
                 // Redirect to receipt printer view
                 header("Location: receipt.php?order_id=" . $orderId);
@@ -247,12 +250,12 @@ require_once __DIR__ . '/../includes/header.php';
                                 <div class="col-md-4 col-sm-6">
                                     <div class="card pos-product-card bg-light h-100 p-2 d-flex flex-column justify-content-between">
                                         <div class="position-relative overflow-hidden mb-2 rounded" style="height: 110px;">
-                                            <img src="<?php echo htmlspecialchars($prod['image_url']); ?>" alt="<?php echo htmlspecialchars($prod['name']); ?>" class="w-100 h-100" style="object-fit: cover;">
+                                            <img src="<?php echo htmlspecialchars(getProductImage($prod['image_url'])); ?>" alt="<?php echo htmlspecialchars($prod['name']); ?>" class="w-100 h-100" style="object-fit: cover;">
                                         </div>
                                         <div>
                                             <h6 class="mb-1 small fw-bold text-dark text-truncate" title="<?php echo htmlspecialchars($prod['name']); ?>"><?php echo htmlspecialchars($prod['name']); ?></h6>
                                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                                <span class="small fw-bold text-primary">$<?php echo number_format($prod['price'], 2); ?></span>
+                                                <span class="small fw-bold text-primary"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($prod['price'], 2); ?></span>
                                                 <span class="small text-muted" style="font-size: 0.75rem;">Stock: <?php echo $prod['stock_quantity']; ?></span>
                                             </div>
                                         </div>
@@ -295,7 +298,7 @@ require_once __DIR__ . '/../includes/header.php';
                                     <div class="d-flex justify-content-between align-items-center bg-white p-2 rounded shadow-sm">
                                         <div style="max-width: 60%;">
                                             <h6 class="mb-0 fw-bold small text-truncate text-dark"><?php echo htmlspecialchars($item['name']); ?></h6>
-                                            <span class="text-muted small">$<?php echo number_format($item['price'], 2); ?> each</span>
+                                            <span class="text-muted small"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($item['price'], 2); ?> each</span>
                                         </div>
                                         <div class="d-flex align-items-center gap-2">
                                             <!-- Qty Modifier -->
@@ -305,7 +308,7 @@ require_once __DIR__ . '/../includes/header.php';
                                                 <input type="number" name="quantity" value="<?php echo $item['quantity']; ?>" min="0" class="form-control form-control-sm text-center px-1" style="max-width: 50px;" onchange="if (typeof this.form.requestSubmit === 'function') { this.form.requestSubmit(); } else { this.form.submit(); }">
                                             </form>
                                             
-                                            <span class="fw-bold small text-primary">$<?php echo number_format($item['total_price'], 2); ?></span>
+                                            <span class="fw-bold small text-primary"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($item['total_price'], 2); ?></span>
                                             
                                             <!-- Delete -->
                                             <form action="index.php" method="POST" class="d-inline">
@@ -350,15 +353,15 @@ require_once __DIR__ . '/../includes/header.php';
                         <div class="border-top pt-3 mb-3 small">
                             <div class="d-flex justify-content-between mb-1">
                                 <span class="text-muted">Subtotal</span>
-                                <span>$<?php echo number_format($pos_subtotal, 2); ?></span>
+                                <span><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($pos_subtotal, 2); ?></span>
                             </div>
                             <div class="d-flex justify-content-between mb-1">
                                 <span class="text-muted">VAT Tax (5%)</span>
-                                <span>$<?php echo number_format($pos_tax, 2); ?></span>
+                                <span><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($pos_tax, 2); ?></span>
                             </div>
                             <div class="d-flex justify-content-between align-items-center border-top pt-2">
                                 <span class="fw-bold text-dark">Grand Total</span>
-                                <span class="fw-bold text-primary fs-5">$<?php echo number_format($pos_grand_total, 2); ?></span>
+                                <span class="fw-bold text-primary fs-5"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($pos_grand_total, 2); ?></span>
                             </div>
                         </div>
 

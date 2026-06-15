@@ -1,7 +1,9 @@
 <?php
 // logout.php - Session destruction utility
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+require_once __DIR__ . '/includes/auth.php';
+
+if (isLoggedIn()) {
+    logCashierAction('Logout', 'Logged out of system portal.');
 }
 
 $_SESSION = array();

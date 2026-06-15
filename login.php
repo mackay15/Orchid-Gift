@@ -12,7 +12,7 @@ if (isLoggedIn()) {
     exit();
 }
 
-$error = '';
+$error = $_GET['error'] ?? '';
 $success_msg = '';
 $redirect = $_GET['redirect'] ?? '';
 
@@ -30,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         $loginRes = loginUser($username, $password);
         if ($loginRes === true) {
+            logCashierAction('Login', 'Logged in to system portal.');
             if (!empty($redirect)) {
                 header("Location: " . $redirect);
             } else {
@@ -52,456 +53,508 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In — Orchid Gifts & More</title>
     <meta name="description" content="Sign in to your Orchid Gifts & More account to shop, manage orders, and access your dashboard.">
+    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
         :root {
-            --primary:       #5a189a;
-            --primary-light: #9d4edd;
-            --accent-red:    #b91c1c;
-            --text-dark:     #2c1f45;
-            --text-mid:      #6b5b82;
+            --primary-teal: #14b8a6;
+            --primary-teal-hover: #0d9488;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --card-bg: #ffffff;
+            --border-color: #f1f5f9;
         }
 
-        html, body { height: 100%; font-family: 'Outfit', sans-serif; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-        /* ── Full-screen shop background ── */
         body {
+            font-family: 'Outfit', sans-serif;
             min-height: 100vh;
-            /* SHOP BACKGROUND — swap this URL for your real shop photo when ready */
-            background-image: url('assets/shop_bg_placeholder.jpg');
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Full screen blurred background using the same image as left panel */
+        .full-bg-blur {
+            position: fixed;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background-image: url('assets/loginback.jpg');
             background-size: cover;
             background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            display: flex;
-            align-items: flex-start;       /* prevents flex from clipping overflow */
-            justify-content: center;
-            padding: 60px 16px 60px;       /* top/bottom breathing room */
-            overflow-y: auto;              /* allow scroll on small screens */
-            position: relative;
+            filter: blur(15px);
+            z-index: -2;
+            transform: scale(1.1);
         }
 
-        /* Layered dark + tinted overlay */
-        body::before {
-            content: '';
+        /* Dark backdrop overlay to stand out the card */
+        .full-bg-overlay {
             position: fixed;
-            inset: 0;
-            background:
-                linear-gradient(160deg,
-                    rgba(18, 6, 34, 0.75) 0%,
-                    rgba(90, 24, 154, 0.48) 55%,
-                    rgba(185, 28, 28, 0.28) 100%);
-            z-index: 0;
-        }
-
-        /* Ambient bokeh blobs */
-        .bokeh {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(70px);
-            pointer-events: none;
-            z-index: 0;
-            animation: drift 14s ease-in-out infinite;
-        }
-        .bokeh-1 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(255,133,161,0.18), transparent 65%); top: -10%; left: -10%; animation-delay: 0s; }
-        .bokeh-2 { width: 350px; height: 350px; background: radial-gradient(circle, rgba(123,44,191,0.20), transparent 65%); bottom: -8%; right: -8%; animation-delay: -5s; }
-        .bokeh-3 { width: 240px; height: 240px; background: radial-gradient(circle, rgba(247,37,133,0.14), transparent 65%); top: 45%; left: 28%; animation-delay: -9s; }
-
-        @keyframes drift {
-            0%, 100% { transform: translate(0, 0)    scale(1);    }
-            33%       { transform: translate(15px, -20px) scale(1.04); }
-            66%       { transform: translate(-10px, 12px) scale(0.97); }
-        }
-
-        /* ── Auth card wrapper ── */
-        .auth-wrapper {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 460px;
-            animation: riseIn 0.65s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-        }
-
-        @keyframes riseIn {
-            from { opacity: 0; transform: translateY(50px) scale(0.97); }
-            to   { opacity: 1; transform: translateY(0)    scale(1);    }
-        }
-
-        /* ── Glassmorphic card ── */
-        .auth-card {
-            background: rgba(255, 255, 255, 0.86);
-            backdrop-filter: blur(28px);
-            -webkit-backdrop-filter: blur(28px);
-            border: 1px solid rgba(255, 255, 255, 0.55);
-            border-radius: 32px;
-            overflow: hidden;
-            box-shadow:
-                0 40px 100px rgba(0, 0, 0, 0.38),
-                0 0 0 1px rgba(255, 255, 255, 0.18) inset;
-        }
-
-        /* ── Card header band with logo inside ── */
-        .card-brand-header {
-            background: linear-gradient(145deg, #1a0530, #3a0f6e, #5a189a);
-            padding: 36px 32px 28px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Subtle pattern inside header */
-        .card-brand-header::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(circle at 20% 0%, rgba(247,37,133,0.18) 0%, transparent 45%),
-                radial-gradient(circle at 85% 100%, rgba(255,133,161,0.14) 0%, transparent 40%);
-            pointer-events: none;
-        }
-
-        /* ── Logo inside header ── */
-        .card-logo-ring {
-            position: relative;
-            z-index: 1;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            overflow: hidden;              /* clips image corners to circle */
-            /* Glowing ring effect */
-            box-shadow:
-                0 0 0 3px rgba(255,255,255,0.20),
-                0 0 0 8px rgba(255,255,255,0.07),
-                0 12px 40px rgba(0,0,0,0.45);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-        }
-
-        .card-logo-ring:hover {
-            transform: scale(1.06) rotate(-3deg);
-            box-shadow:
-                0 0 0 3px rgba(255,133,161,0.45),
-                0 0 0 8px rgba(255,133,161,0.12),
-                0 18px 50px rgba(0,0,0,0.5);
-        }
-
-        .card-logo-ring img {
-            width: 100%;          /* fill the ring container fully */
-            height: 100%;
-            object-fit: cover;    /* cover so the circular logo fills the circle */
-            object-position: center;
-            clip-path: circle(50% at 50% 50%); /* hard-clip to perfect circle */
-            filter: drop-shadow(0 4px 14px rgba(0,0,0,0.3));
-        }
-
-        .card-brand-name {
-            position: relative;
-            z-index: 1;
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #fff;
-            text-align: center;
-            letter-spacing: 0.05em;
-            line-height: 1.2;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.4);
-        }
-
-        .card-brand-tagline {
-            position: relative;
-            z-index: 1;
-            font-size: 0.78rem;
-            color: rgba(255,255,255,0.65);
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            margin-top: -8px;
-        }
-
-        /* Curved bottom of the header for smooth transition */
-        .card-brand-header::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
+            top: 0;
             left: 0;
             right: 0;
-            height: 28px;
-            background: rgba(255,255,255,0.86);
-            border-radius: 28px 28px 0 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.45);
+            z-index: -1;
         }
 
-        /* ── Card body (form area) ── */
-        .card-body-form {
-            padding: 28px 36px 36px;
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
-        .form-heading {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.35rem;
-            color: var(--text-dark);
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 4px;
-        }
-
-        .form-subheading {
-            font-size: 0.86rem;
-            color: var(--text-mid);
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        /* ── Input fields ── */
-        .field-wrap {
-            margin-bottom: 18px;
-        }
-
-        .field-wrap label {
-            display: block;
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: var(--text-mid);
-            margin-bottom: 7px;
-            letter-spacing: 0.02em;
-        }
-
-        .field-inner {
-            position: relative;
+        /* Centered login card with subtle box shadow */
+        .login-card {
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            width: 100%;
+            max-width: 960px;
+            min-height: 600px;
             display: flex;
-            align-items: center;
+            overflow: hidden;
+            position: relative;
+            z-index: 10;
+            animation: cardEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
 
-        .field-icon {
+        /* Left side: Image and overlay (45% width) */
+        .left-panel {
+            width: 45%;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 50px 40px;
+            color: #ffffff;
+        }
+
+        .left-panel-bg {
             position: absolute;
-            left: 14px;
-            color: #a88cc8;
-            font-size: 1rem;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('assets/loginback.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+            transition: transform 10s ease;
+        }
+
+        .login-card:hover .left-panel-bg {
+            transform: scale(1.08);
+        }
+
+        .left-panel-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(20, 184, 166, 0.85), rgba(13, 148, 136, 0.9));
             z-index: 2;
+        }
+
+        .left-panel-content {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        /* Smooth curved/wave divider between left panel and right form section */
+        .wave-divider {
+            position: absolute;
+            top: 0;
+            right: -1px;
+            width: 80px;
+            height: 100%;
+            z-index: 4;
+            fill: var(--card-bg);
             pointer-events: none;
         }
 
-        .field-inner input {
+        .wave-divider svg {
             width: 100%;
-            padding: 12px 14px 12px 42px;
-            border: 1.5px solid rgba(90, 24, 154, 0.14);
-            border-radius: 14px;
-            font-family: 'Outfit', sans-serif;
-            font-size: 0.95rem;
-            color: var(--text-dark);
-            background: rgba(248, 243, 255, 0.85);
-            transition: all 0.25s ease;
-            outline: none;
+            height: 100%;
+            display: block;
         }
 
-        .field-inner input:focus {
-            border-color: var(--primary-light);
-            background: #fff;
-            box-shadow: 0 0 0 3px rgba(157, 78, 221, 0.14);
+        /* Right side: White login form section (55% width) */
+        .right-panel {
+            width: 55%;
+            background-color: var(--card-bg);
+            padding: 50px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 3;
         }
 
-        .field-inner input::placeholder { color: #c4aee0; font-size: 0.88rem; }
+        /* Responsive Styles */
+        @media (max-width: 991.98px) {
+            .right-panel {
+                padding: 40px 45px;
+            }
+        }
 
-        .toggle-pw {
+        @media (max-width: 767.98px) {
+            .login-card {
+                flex-direction: column;
+                max-width: 460px;
+                min-height: auto;
+                border-radius: 20px;
+            }
+            .left-panel {
+                display: none !important;
+            }
+            .right-panel {
+                width: 100%;
+                padding: 40px 30px;
+            }
+        }
+
+        /* Input Fields with icons inside */
+        .input-icon-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-icon-group .input-icon-left {
             position: absolute;
-            right: 14px;
-            color: #a88cc8;
-            cursor: pointer;
-            font-size: 1rem;
-            z-index: 2;
-            transition: color 0.2s;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            z-index: 5;
+            pointer-events: none;
+            transition: color 0.3s ease;
         }
-        .toggle-pw:hover { color: var(--primary); }
 
-        /* ── Alerts ── */
-        .auth-alert {
+        .input-icon-group .form-control {
+            border-radius: 50px;
+            padding: 13px 20px 13px 50px;
+            font-size: 0.95rem;
+            background-color: #f8fafc;
+            border: 1.5px solid #f1f5f9;
+            color: var(--text-main);
+            box-shadow: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-icon-group .form-control:focus {
+            background-color: #ffffff;
+            border-color: var(--primary-teal);
+            box-shadow: 0 0 0 4px rgba(20, 184, 166, 0.15);
+        }
+
+        .input-icon-group .form-control:focus ~ .input-icon-left {
+            color: var(--primary-teal);
+        }
+
+        /* Rounded turquoise login button */
+        .btn-turquoise {
+            background-color: var(--primary-teal);
+            color: #ffffff;
+            border: none;
+            padding: 13px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(20, 184, 166, 0.25);
+        }
+
+        .btn-turquoise:hover {
+            background-color: var(--primary-teal-hover);
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(20, 184, 166, 0.35);
+        }
+
+        .btn-turquoise:active {
+            transform: translateY(0);
+        }
+
+        /* Links with smooth hover effects */
+        .forgot-link {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .forgot-link:hover {
+            color: var(--primary-teal);
+        }
+
+        .signup-link {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary-teal);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .signup-link:hover {
+            color: var(--primary-teal-hover);
+            text-decoration: underline !important;
+        }
+
+        /* Google button styling */
+        .btn-google-custom {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
-            padding: 11px 14px;
-            border-radius: 12px;
-            font-size: 0.86rem;
-            margin-bottom: 18px;
-        }
-        .auth-alert-error   { background: rgba(220,38,38,0.10); border: 1px solid rgba(220,38,38,0.22); color: #b91c1c; }
-        .auth-alert-success { background: rgba(22,163,74,0.10);  border: 1px solid rgba(22,163,74,0.25);  color: #15803d; }
-
-        /* ── Submit button ── */
-        .btn-signin {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #3d0d75, #5a189a, #7b2cbf);
-            color: #fff;
-            border: none;
-            border-radius: 16px;
-            font-family: 'Outfit', sans-serif;
-            font-size: 0.97rem;
-            font-weight: 600;
-            letter-spacing: 0.04em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(90,24,154,0.32);
-            margin-top: 8px;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-signin::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
-            transition: left 0.5s ease;
-        }
-        .btn-signin:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(90,24,154,0.40); }
-        .btn-signin:hover::before { left: 100%; }
-        .btn-signin:active { transform: translateY(0); }
-
-        /* ── Footer links ── */
-        .card-footer-link {
-            text-align: center;
-            margin-top: 18px;
-            font-size: 0.86rem;
-            color: var(--text-mid);
-        }
-        .card-footer-link a {
-            color: var(--primary);
-            font-weight: 600;
+            background-color: #ffffff;
+            color: #334155;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 50px;
+            padding: 12px 20px;
+            font-size: 0.95rem;
+            font-weight: 500;
             text-decoration: none;
+            transition: all 0.3s ease;
+            width: 100%;
         }
-        .card-footer-link a:hover { color: var(--primary-light); text-decoration: underline; }
 
-        /* ── Staff hint ── */
-        .staff-hint {
-            margin-top: 16px;
-            padding: 10px 14px;
-            background: rgba(90,24,154,0.06);
-            border: 1px solid rgba(90,24,154,0.11);
-            border-radius: 12px;
-            font-size: 0.77rem;
-            color: #7a5f9f;
+        .btn-google-custom:hover {
+            background-color: #f8fafc;
+            border-color: var(--primary-teal);
+            color: #1e293b;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-google-custom img {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* OAuth divider */
+        .oauth-divider {
+            display: flex;
+            align-items: center;
             text-align: center;
-        }
-        .staff-hint code {
-            background: rgba(90,24,154,0.09);
-            color: var(--primary);
-            border-radius: 5px;
-            padding: 1px 5px;
+            color: var(--text-muted);
+            margin: 25px 0 20px;
+            font-size: 0.85rem;
         }
 
-        @media (max-width: 480px) {
-            .card-body-form { padding: 24px 22px 30px; }
-            .card-brand-header { padding: 28px 22px 24px; }
-            .card-logo-ring { width: 82px; height: 82px; }
-            .card-logo-ring img { width: 70px; height: 70px; }
-            .card-brand-name { font-size: 1.25rem; }
+        .oauth-divider::before,
+        .oauth-divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .oauth-divider::before {
+            margin-right: 15px;
+        }
+
+        .oauth-divider::after {
+            margin-left: 15px;
+        }
+
+        /* Social icons at bottom */
+        .social-icons-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icon-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon-btn:hover {
+            background-color: var(--primary-teal);
+            border-color: var(--primary-teal);
+            color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 12px rgba(20, 184, 166, 0.25);
         }
     </style>
 </head>
 <body>
 
-<!-- Ambient bokeh blobs -->
-<div class="bokeh bokeh-1"></div>
-<div class="bokeh bokeh-2"></div>
-<div class="bokeh bokeh-3"></div>
+<!-- Full-screen blurred background using the same image as left panel -->
+<div class="full-bg-blur"></div>
+<div class="full-bg-overlay"></div>
 
-<div class="auth-wrapper">
-    <div class="auth-card">
-
-        <!-- ── Brand header with logo inside the card ── -->
-        <div class="card-brand-header">
-            <div class="card-logo-ring">
-                <img src="assets/orchid_logo.png" alt="Orchid Gifts & More Logo">
+<!-- Centered login card with subtle box shadow -->
+<div class="login-card">
+    
+    <!-- Left side (45% width): background image with teal overlay & curved wave divider -->
+    <div class="left-panel">
+        <div class="left-panel-bg"></div>
+        <div class="left-panel-overlay"></div>
+        
+        <div class="left-panel-content">
+            <!-- App Branding -->
+            <div class="d-flex align-items-center gap-2">
+                <img src="assets/logo.png" alt="Orchid Logo" style="height: 42px; width: auto; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));">
+                <span class="fs-4 fw-bold tracking-wide" style="font-family: 'Outfit', sans-serif; letter-spacing: 1.5px;">ORCHID</span>
             </div>
-            <div class="card-brand-name">Orchid Gifts &amp; More</div>
-            <div class="card-brand-tagline">Where every gift tells a story</div>
+            
+            <!-- Hero content -->
+            <div class="mb-4">
+                <h2 class="fw-bold mb-3" style="font-size: 2.1rem; line-height: 1.25; font-family: 'Outfit', sans-serif;">Welcome to ORCHID GIFT & MORE 🎁</h2>
+                <p class="opacity-75 small">Manage operations, track real-time analytics, and process items dynamically with our state of the art tools.</p>
+            </div>
+            
+            <!-- Footer brand info -->
+            <div class="small opacity-50">
+                &copy; <?php echo date('Y'); ?> Orchid, Inc. All rights reserved.
+            </div>
+        </div>
+        
+        <!-- Smooth curved/wave divider between image section and form section -->
+        <div class="wave-divider">
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M100,0 C 30,30 30,70 100,100 L 100,100 L 100,0 Z"></path>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Right side (55% width): white login form section -->
+    <div class="right-panel">
+        
+        <!-- Welcome heading and subtitle centered at the top -->
+        <div class="text-center mb-4">
+            <h3 class="fw-bold text-dark mb-1">Welcome Back</h3>
+            <p class="text-muted small">Log in to your account to continue</p>
         </div>
 
-        <!-- ── Form body ── -->
-        <div class="card-body-form">
-            <h1 class="form-heading">Welcome back</h1>
-            <p class="form-subheading">Sign in to continue to your account</p>
+        <!-- PHP Alert messages -->
+        <?php if (!empty($error)): ?>
+            <div class="alert alert-danger border-0 rounded-4 py-2 px-3 small text-center mb-4" role="alert">
+                <i class="bi bi-exclamation-circle-fill me-2"></i><?php echo htmlspecialchars($error); ?>
+            </div>
+        <?php endif; ?>
 
-            <?php if (!empty($error)): ?>
-                <div class="auth-alert auth-alert-error">
-                    <i class="bi bi-exclamation-circle-fill"></i>
-                    <?php echo htmlspecialchars($error); ?>
-                </div>
-            <?php endif; ?>
+        <?php if (!empty($success_msg)): ?>
+            <div class="alert alert-success border-0 rounded-4 py-2 px-3 small text-center mb-4" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i><?php echo htmlspecialchars($success_msg); ?>
+            </div>
+        <?php endif; ?>
 
-            <?php if (!empty($success_msg)): ?>
-                <div class="auth-alert auth-alert-success">
-                    <i class="bi bi-check-circle-fill"></i>
-                    <?php echo htmlspecialchars($success_msg); ?>
-                </div>
-            <?php endif; ?>
-
-            <form action="login.php?redirect=<?php echo urlencode($redirect); ?>" method="POST" novalidate>
-
-                <div class="field-wrap">
-                    <label for="username">Username or Email</label>
-                    <div class="field-inner">
-                        <i class="bi bi-person field-icon"></i>
-                        <input type="text" id="username" name="username" required
-                               placeholder="Enter your username or email"
-                               value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>"
-                               autocomplete="username">
-                    </div>
-                </div>
-
-                <div class="field-wrap">
-                    <label for="password">Password</label>
-                    <div class="field-inner">
-                        <i class="bi bi-lock field-icon"></i>
-                        <input type="password" id="password" name="password" required
-                               placeholder="Enter your password"
-                               autocomplete="current-password">
-                        <i class="bi bi-eye toggle-pw" id="togglePw" title="Show / hide"></i>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-signin" id="loginBtn">
-                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
-                </button>
-            </form>
-
-            <div class="card-footer-link">
-                Don't have an account? <a href="register.php">Create one free</a>
+        <!-- Login Form -->
+        <form action="login.php?redirect=<?php echo urlencode($redirect); ?>" method="POST">
+            
+            <!-- Email/Username field with icon inside -->
+            <div class="input-icon-group">
+                <input type="text" id="username" name="username" class="form-control" required
+                       placeholder="yourmail@example.com"
+                       value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>"
+                       autocomplete="username">
+                <span class="input-icon-left"><i class="bi bi-envelope"></i></span>
             </div>
 
-            <div class="staff-hint">
-                <strong>Staff:</strong>&nbsp;
-                Admin — <code>admin</code> / <code>admin123</code> &nbsp;·&nbsp;
-                Cashier — <code>cashier</code> / <code>cashier123</code>
+            <!-- Password field with icon inside -->
+            <div class="input-icon-group">
+                <input type="password" id="password" name="password" class="form-control" required
+                       placeholder="••••••••"
+                       autocomplete="current-password">
+                <span class="input-icon-left"><i class="bi bi-lock"></i></span>
             </div>
-        </div><!-- /.card-body-form -->
 
-    </div><!-- /.auth-card -->
-</div><!-- /.auth-wrapper -->
+            <!-- Forgot password link aligned to the right -->
+            <div class="text-end mb-4">
+                <a href="#" class="forgot-link" onclick="alert('Please contact your administrator to reset password.'); return false;">Forgot password?</a>
+            </div>
 
+            <!-- Submit Button (turquoise) -->
+            <div class="mb-3">
+                <button type="submit" class="btn btn-turquoise w-100" id="loginBtn">Sign in</button>
+            </div>
+
+            <!-- Google Login OAuth -->
+            <div class="oauth-divider">
+                <span>or</span>
+            </div>
+
+            <div class="mb-3">
+                <a href="google-oauth.php" class="btn-google-custom">
+                    <img src="assets/google-logo.svg" alt="Google logo">
+                    Continue with Google
+                </a>
+            </div>
+        </form>
+
+        <!-- Don't have an account? Sign up section below form -->
+        <div class="text-center mt-3 mb-4">
+            <span class="text-muted small">Don't have an account? </span>
+            <a href="register.php" class="signup-link">Sign up!</a>
+        </div>
+
+        <!-- Social Media Icons (Facebook, Twitter/X, LinkedIn) at the bottom -->
+        <div class="social-login-section mt-auto pt-3 border-top" style="border-top-color: #f1f5f9 !important;">
+            <div class="social-icons-container">
+                <a href="https://facebook.com" target="_blank" class="social-icon-btn" aria-label="Facebook">
+                    <i class="bi bi-facebook"></i>
+                </a>
+                <a href="https://twitter.com" target="_blank" class="social-icon-btn" aria-label="Twitter/X">
+                    <i class="bi bi-twitter-x"></i>
+                </a>
+                <a href="https://linkedin.com" target="_blank" class="social-icon-btn" aria-label="LinkedIn">
+                    <i class="bi bi-linkedin"></i>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Bootstrap 5 Bundle JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    // Password toggle
-    const togglePw = document.getElementById('togglePw');
-    const pwInput  = document.getElementById('password');
-    togglePw.addEventListener('click', () => {
-        const show = pwInput.type === 'password';
-        pwInput.type = show ? 'text' : 'password';
-        togglePw.classList.toggle('bi-eye',       !show);
-        togglePw.classList.toggle('bi-eye-slash',  show);
-    });
 
-    // Loading state
+<script>
+    // Show loading feedback on form submission
     document.querySelector('form').addEventListener('submit', () => {
         const btn = document.getElementById('loginBtn');
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Signing in…';
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Signing in...';
         btn.disabled = true;
     });
 </script>

@@ -109,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmtAdmin->execute();
             $admin_id = $stmtAdmin->fetchColumn();
             if ($admin_id) {
-                $orderMsg = "New online order #" . $orderId . " placed by " . $_SESSION['full_name'] . " ($" . number_format($grand_total,2) . ").";
+                $orderMsg = "New online order #" . $orderId . " placed by " . $_SESSION['full_name'] . " (" . CURRENCY_SYMBOL . number_format($grand_total,2) . ").";
                 $stmtN = $pdo->prepare("INSERT INTO notifications (user_id, message) VALUES (?, ?)");
                 $stmtN->execute([$admin_id, $orderMsg]);
             }
@@ -219,9 +219,9 @@ require_once __DIR__ . '/../includes/header.php';
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <h6 class="mb-0 fw-bold small text-dark"><?php echo htmlspecialchars($item['name']); ?></h6>
-                                <small class="text-muted">Qty: <?php echo $item['quantity']; ?> × $<?php echo number_format($item['price'], 2); ?></small>
+                                <small class="text-muted">Qty: <?php echo $item['quantity']; ?> × <?php echo CURRENCY_SYMBOL; ?><?php echo number_format($item['price'], 2); ?></small>
                             </div>
-                            <span class="fw-bold small text-primary">$<?php echo number_format($item['total_price'], 2); ?></span>
+                            <span class="fw-bold small text-primary"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($item['total_price'], 2); ?></span>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -230,18 +230,18 @@ require_once __DIR__ . '/../includes/header.php';
                 
                 <div class="d-flex justify-content-between mb-2 small">
                     <span class="text-muted">Subtotal</span>
-                    <span class="fw-semibold">$<?php echo number_format($subtotal, 2); ?></span>
+                    <span class="fw-semibold"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($subtotal, 2); ?></span>
                 </div>
                 <div class="d-flex justify-content-between mb-3 small">
                     <span class="text-muted">VAT Tax (5%)</span>
-                    <span class="fw-semibold">$<?php echo number_format($tax, 2); ?></span>
+                    <span class="fw-semibold"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($tax, 2); ?></span>
                 </div>
                 
                 <hr style="border-color: rgba(90, 24, 154, 0.15);">
                 
                 <div class="d-flex justify-content-between align-items-center">
                     <span class="fw-bold text-dark fs-5">Grand Total</span>
-                    <span class="fw-bold text-primary fs-4">$<?php echo number_format($grand_total, 2); ?></span>
+                    <span class="fw-bold text-primary fs-4"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($grand_total, 2); ?></span>
                 </div>
             </div>
         </div>

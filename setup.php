@@ -29,6 +29,7 @@ try {
         full_name VARCHAR(100) NOT NULL,
         role ENUM('customer', 'cashier', 'admin') NOT NULL DEFAULT 'customer',
         status ENUM('Active', 'Inactive') DEFAULT 'Active',
+        google_id VARCHAR(255) UNIQUE DEFAULT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB;");
     echo "<p>✔ Table <b>users</b> created.</p>";
@@ -143,6 +144,17 @@ try {
         FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
     ) ENGINE=InnoDB;");
     echo "<p>✔ Table <b>notifications</b> created.</p>";
+
+    // CASHIER LOGS Table
+    $pdo->exec("CREATE TABLE IF NOT EXISTS cashier_logs (
+        log_id INT AUTO_INCREMENT PRIMARY KEY,
+        cashier_id INT NOT NULL,
+        action VARCHAR(100) NOT NULL,
+        details TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (cashier_id) REFERENCES users(user_id) ON DELETE CASCADE
+    ) ENGINE=InnoDB;");
+    echo "<p>✔ Table <b>cashier_logs</b> created.</p>";
 
     // 4. Seed Data
     echo "<h3 style='color: #5a189a;'>Seeding Database...</h3>";

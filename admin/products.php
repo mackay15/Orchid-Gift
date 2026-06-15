@@ -32,26 +32,82 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($name) || $cat_id <= 0 || $price <= 0 || $stock < 0) {
             $error = "Please fill in all required fields accurately (price and stock must be positive).";
         } else {
-            if (empty($img)) {
-                $img = 'https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=600&q=80';
+            // Handle Local Image Upload if present
+            if (isset($_FILES['product_image']) && $_FILES['product_image']['error'] === UPLOAD_ERR_OK) {
+                $file_name = $_FILES['product_image']['name'];
+                $file_tmp = $_FILES['product_image']['tmp_name'];
+                $ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+                $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                
+                if (in_array($ext, $allowed)) {
+                    $upload_dir = __DIR__ . '/../assets/uploads';
+                    if (!is_dir($upload_dir)) {
+                        mkdir($upload_dir, 0755, true);
+                    }
+                    
+                    $new_name = uniqid('prod_', true) . '.' . $ext;
+                    $dest_path = $upload_dir . '/' . $new_name;
+                    
+                    if (move_uploaded_file($file_tmp, $dest_path)) {
+                        // If updating and previous image was local, delete it
+                        if ($action === 'update' && $edit_product && !empty($edit_product['image_url'])) {
+                            if (strpos($edit_product['image_url'], 'assets/uploads/') === 0) {
+                                $old_local_path = __DIR__ . '/../' . $edit_product['image_url'];
+                                if (file_exists($old_local_path)) {
+                                    unlink($old_local_path);
+                                }
+                            }
+                        }
+                        $img = 'assets/uploads/' . $new_name;
+                    } else {
+                        $error = "Failed to upload image locally.";
+                    }
+                } else {
+                    $error = "Invalid file type. Only JPG, JPEG, PNG, GIF, and WEBP are allowed.";
+                }
+            } elseif (isset($_FILES['product_image']) && $_FILES['product_image']['error'] !== UPLOAD_ERR_NO_FILE) {
+                $error = "Error during file upload: " . $_FILES['product_image']['error'];
             }
             
-            if ($action === 'add') {
-                $stmt = $pdo->prepare("INSERT INTO products (category_id, name, description, price, stock_quantity, image_url) VALUES (?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$cat_id, $name, $desc, $price, $stock, $img]);
-                $success = "Product added successfully!";
-            } else {
-                $stmt = $pdo->prepare("UPDATE products SET category_id = ?, name = ?, description = ?, price = ?, stock_quantity = ?, image_url = ? WHERE product_id = ?");
-                $stmt->execute([$cat_id, $name, $desc, $price, $stock, $img, $edit_id]);
-                $success = "Product updated successfully!";
-                $edit_id = 0;
-                $edit_product = null;
+            if (empty($error)) {
+                if (empty($img)) {
+                    if ($action === 'update' && $edit_product) {
+                        $img = $edit_product['image_url'];
+                    } else {
+                        $img = 'https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=600&q=80';
+                    }
+                }
+                
+                if ($action === 'add') {
+                    $stmt = $pdo->prepare("INSERT INTO products (category_id, name, description, price, stock_quantity, image_url) VALUES (?, ?, ?, ?, ?, ?)");
+                    $stmt->execute([$cat_id, $name, $desc, $price, $stock, $img]);
+                    $success = "Product added successfully!";
+                } else {
+                    $stmt = $pdo->prepare("UPDATE products SET category_id = ?, name = ?, description = ?, price = ?, stock_quantity = ?, image_url = ? WHERE product_id = ?");
+                    $stmt->execute([$cat_id, $name, $desc, $price, $stock, $img, $edit_id]);
+                    $success = "Product updated successfully!";
+                    $edit_id = 0;
+                    $edit_product = null;
+                }
             }
         }
     }
     
     elseif ($action === 'delete') {
         $del_id = intval($_POST['product_id']);
+        // Fetch product to see if there is a local image to delete
+        $stmt = $pdo->prepare("SELECT image_url FROM products WHERE product_id = ?");
+        $stmt->execute([$del_id]);
+        $prod_to_del = $stmt->fetch();
+        if ($prod_to_del && !empty($prod_to_del['image_url'])) {
+            $img_url = $prod_to_del['image_url'];
+            if (strpos($img_url, 'assets/uploads/') === 0) {
+                $local_path = __DIR__ . '/../' . $img_url;
+                if (file_exists($local_path)) {
+                    unlink($local_path);
+                }
+            }
+        }
         $stmt = $pdo->prepare("DELETE FROM products WHERE product_id = ?");
         $stmt->execute([$del_id]);
         $success = "Product deleted successfully!";
@@ -122,13 +178,13 @@ require_once __DIR__ . '/../includes/header.php';
                                 <?php foreach ($products as $p): ?>
                                     <tr>
                                         <td>
-                                            <img src="<?php echo htmlspecialchars($p['image_url']); ?>" alt="" class="rounded shadow-sm" style="width: 50px; height: 50px; object-fit: cover;">
+                                            <img src="<?php echo htmlspecialchars(getProductImage($p['image_url'])); ?>" alt="" class="rounded shadow-sm" style="width: 50px; height: 50px; object-fit: cover;">
                                         </td>
                                         <td>
                                             <div class="fw-bold text-dark"><?php echo htmlspecialchars($p['name']); ?></div>
                                             <span class="badge bg-secondary-subtle text-secondary" style="font-size: 0.7rem;"><?php echo htmlspecialchars($p['category_name']); ?></span>
                                         </td>
-                                        <td class="fw-bold text-primary">$<?php echo number_format($p['price'], 2); ?></td>
+                                        <td class="fw-bold text-primary"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($p['price'], 2); ?></td>
                                         <td>
                                             <?php if ($p['stock_quantity'] <= 3): ?>
                                                 <span class="badge bg-danger bg-opacity-10 text-danger p-2">Low: <?php echo $p['stock_quantity']; ?></span>
@@ -164,7 +220,7 @@ require_once __DIR__ . '/../includes/header.php';
                     <?php echo $edit_product ? 'Edit Product' : 'Add New Product'; ?>
                 </h5>
                 
-                <form action="products.php<?php echo $edit_product ? '?edit_id='.$edit_id : ''; ?>" method="POST">
+                <form action="products.php<?php echo $edit_product ? '?edit_id='.$edit_id : ''; ?>" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="<?php echo $edit_product ? 'update' : 'add'; ?>">
                     
                     <div class="mb-3">
@@ -186,7 +242,7 @@ require_once __DIR__ . '/../includes/header.php';
 
                     <div class="row g-2 mb-3">
                         <div class="col-6">
-                            <label for="price" class="form-label text-muted small fw-bold">Price ($) *</label>
+                            <label for="price" class="form-label text-muted small fw-bold">Price (<?php echo CURRENCY_SYMBOL; ?>) *</label>
                             <input type="number" step="0.01" class="form-control form-control-sm" id="price" name="price" required placeholder="0.00" value="<?php echo $edit_product ? $edit_product['price'] : ''; ?>">
                         </div>
                         <div class="col-6">
@@ -195,8 +251,20 @@ require_once __DIR__ . '/../includes/header.php';
                         </div>
                     </div>
 
+                    <?php if ($edit_product && !empty($edit_product['image_url'])): ?>
+                        <div class="mb-3">
+                            <label class="form-label text-muted small fw-bold d-block">Current Product Image</label>
+                            <img src="<?php echo htmlspecialchars(getProductImage($edit_product['image_url'])); ?>" alt="Current Product Image" class="img-thumbnail" style="max-height: 120px; object-fit: cover;">
+                        </div>
+                    <?php endif; ?>
+
                     <div class="mb-3">
-                        <label for="image_url" class="form-label text-muted small fw-bold">Image URL</label>
+                        <label for="product_image" class="form-label text-muted small fw-bold">Upload Local Image (Recommended)</label>
+                        <input type="file" class="form-control form-control-sm" id="product_image" name="product_image" accept="image/*">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="image_url" class="form-label text-muted small fw-bold">OR External Image URL</label>
                         <input type="url" class="form-control form-control-sm" id="image_url" name="image_url" placeholder="https://unsplash.com/..." value="<?php echo $edit_product ? htmlspecialchars($edit_product['image_url']) : ''; ?>">
                     </div>
 

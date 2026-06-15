@@ -54,7 +54,7 @@ require_once __DIR__ . '/../includes/header.php';
                                 <td>
                                     <span class="badge bg-secondary-subtle text-secondary"><?php echo htmlspecialchars($s['payment_method'] ?? 'Cash'); ?></span>
                                 </td>
-                                <td class="fw-bold text-primary">$<?php echo number_format($s['total_amount'], 2); ?></td>
+                                <td class="fw-bold text-primary"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($s['total_amount'], 2); ?></td>
                                 <td>
                                     <a href="receipt.php?order_id=<?php echo $s['order_id']; ?>" target="_blank" class="btn btn-orchid-outline btn-xs py-1 px-2.5 rounded-pill" style="font-size: 0.75rem;"><i class="bi bi-printer"></i> Reprint</a>
                                 </td>

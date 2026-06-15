@@ -119,7 +119,7 @@ try {
                     <div class="col-lg-3 col-md-6">
                         <div class="card orchid-card h-100">
                             <div class="position-relative overflow-hidden" style="height: 240px;">
-                                <img src="<?php echo htmlspecialchars($prod['image_url']); ?>" class="card-img-top w-100 h-100" alt="<?php echo htmlspecialchars($prod['name']); ?>">
+                                <img src="<?php echo htmlspecialchars(getProductImage($prod['image_url'])); ?>" class="card-img-top w-100 h-100" alt="<?php echo htmlspecialchars($prod['name']); ?>">
                                 <span class="position-absolute top-0 end-0 bg-primary text-white text-xs px-2 py-1 m-3 rounded-pill" style="font-size: 0.75rem;">
                                     <?php echo htmlspecialchars($prod['category_name']); ?>
                                 </span>
@@ -130,7 +130,7 @@ try {
                                     <p class="card-text text-muted text-xs mb-3 text-truncate" style="font-size: 0.85rem;"><?php echo htmlspecialchars($prod['description']); ?></p>
                                 </div>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <span class="fs-5 fw-bold text-primary">$<?php echo number_format($prod['price'], 2); ?></span>
+                                    <span class="fs-5 fw-bold text-primary"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($prod['price'], 2); ?></span>
                                     <a href="<?php echo $base; ?>/customer/product.php?id=<?php echo $prod['product_id']; ?>" class="btn btn-orchid btn-sm"><i class="bi bi-eye me-1"></i> View</a>
                                 </div>
                             </div>

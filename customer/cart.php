@@ -97,14 +97,14 @@ $grand_total = $subtotal + $tax;
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center gap-3">
-                                                <img src="<?php echo htmlspecialchars($item['image_url']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
+                                                <img src="<?php echo htmlspecialchars(getProductImage($item['image_url'])); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
                                                 <div>
                                                     <h6 class="mb-0 fw-bold"><?php echo htmlspecialchars($item['name']); ?></h6>
                                                     <small class="text-muted">Stock: <?php echo $item['stock']; ?></small>
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>$<?php echo number_format($item['price'], 2); ?></td>
+                                        <td><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($item['price'], 2); ?></td>
                                         <td>
                                             <form action="cart.php" method="POST" class="d-flex align-items-center">
                                                 <input type="hidden" name="action" value="update_qty">
@@ -116,7 +116,7 @@ $grand_total = $subtotal + $tax;
                                                 </div>
                                             </form>
                                         </td>
-                                        <td class="text-end fw-bold text-primary">$<?php echo number_format($item['total_price'], 2); ?></td>
+                                        <td class="text-end fw-bold text-primary"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($item['total_price'], 2); ?></td>
                                         <td class="text-center">
                                             <form action="cart.php" method="POST">
                                                 <input type="hidden" name="action" value="remove_item">
@@ -139,19 +139,19 @@ $grand_total = $subtotal + $tax;
                     
                     <div class="d-flex justify-content-between mb-2">
                         <span class="text-muted">Subtotal</span>
-                        <span class="fw-bold">$<?php echo number_format($subtotal, 2); ?></span>
+                        <span class="fw-bold"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($subtotal, 2); ?></span>
                     </div>
                     
                     <div class="d-flex justify-content-between mb-3">
                         <span class="text-muted">VAT Tax (5%)</span>
-                        <span class="fw-bold">$<?php echo number_format($tax, 2); ?></span>
+                        <span class="fw-bold"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($tax, 2); ?></span>
                     </div>
                     
                     <hr class="my-3" style="border-color: rgba(90, 24, 154, 0.15);">
                     
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <span class="fs-5 fw-bold text-dark">Grand Total</span>
-                        <span class="fs-4 fw-bold text-primary">$<?php echo number_format($grand_total, 2); ?></span>
+                        <span class="fs-4 fw-bold text-primary"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($grand_total, 2); ?></span>
                     </div>
                     
                     <a href="checkout.php" class="btn btn-orchid w-100 py-3 rounded-3 shadow"><i class="bi bi-shield-lock me-2"></i> Proceed to Checkout</a>

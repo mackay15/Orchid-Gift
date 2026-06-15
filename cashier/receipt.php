@@ -98,7 +98,7 @@ $items = $stmt->fetchAll();
                 <tr>
                     <td style="padding: 5px 0;"><?php echo htmlspecialchars($item['name']); ?></td>
                     <td style="text-align: center; padding: 5px 0;"><?php echo $item['quantity']; ?></td>
-                    <td style="text-align: right; padding: 5px 0;">$<?php echo number_format($item['total_price'], 2); ?></td>
+                    <td style="text-align: right; padding: 5px 0;"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($item['total_price'], 2); ?></td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
@@ -113,15 +113,15 @@ $items = $stmt->fetchAll();
     <div style="font-size: 0.85rem; line-height: 1.5;">
         <div style="display: flex; justify-content: space-between;">
             <span>Subtotal:</span>
-            <span>$<?php echo number_format($subtotal, 2); ?></span>
+            <span><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($subtotal, 2); ?></span>
         </div>
         <div style="display: flex; justify-content: space-between;">
             <span>VAT (5%):</span>
-            <span>$<?php echo number_format($tax, 2); ?></span>
+            <span><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($tax, 2); ?></span>
         </div>
         <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1rem; margin-top: 5px;">
             <span>TOTAL:</span>
-            <span>$<?php echo number_format($total, 2); ?></span>
+            <span><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($total, 2); ?></span>
         </div>
     </div>
     

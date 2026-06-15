@@ -127,7 +127,7 @@ if (count($reviews) > 0) {
     <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-5">
         <div class="row g-0">
             <div class="col-md-6" style="max-height: 480px;">
-                <img src="<?php echo htmlspecialchars($product['image_url']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="w-100 h-100" style="object-fit: cover;">
+                <img src="<?php echo htmlspecialchars(getProductImage($product['image_url'])); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="w-100 h-100" style="object-fit: cover;">
             </div>
             <div class="col-md-6 p-4 p-lg-5 d-flex flex-column justify-content-between">
                 <div>
@@ -164,7 +164,7 @@ if (count($reviews) > 0) {
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div>
                             <small class="text-muted d-block">Price</small>
-                            <span class="fs-2 fw-bold text-primary">$<?php echo number_format($product['price'], 2); ?></span>
+                            <span class="fs-2 fw-bold text-primary"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($product['price'], 2); ?></span>
                         </div>
                         
                         <div>

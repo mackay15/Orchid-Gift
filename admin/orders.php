@@ -175,7 +175,7 @@ require_once __DIR__ . '/../includes/header.php';
                                     <tr style="cursor: pointer;" onclick="location.href='orders.php?view_id=<?php echo $o['order_id']; ?>&status=<?php echo $status_filter; ?>&type=<?php echo $type_filter; ?>'">
                                         <td><b>#<?php echo $o['order_id']; ?></b><br><small class="text-muted" style="font-size:0.75rem;"><?php echo date('M d H:i', strtotime($o['created_at'])); ?></small></td>
                                         <td class="text-uppercase small"><?php echo $o['order_type']; ?></td>
-                                        <td class="fw-bold text-primary">$<?php echo number_format($o['total_amount'], 2); ?></td>
+                                        <td class="fw-bold text-primary"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($o['total_amount'], 2); ?></td>
                                         <td><span class="badge <?php echo $status_badge; ?>"><?php echo $o['order_status']; ?></span></td>
                                         <td><span class="badge <?php echo $pay_badge; ?>"><?php echo $o['payment_status']; ?></span></td>
                                         <td><a href="orders.php?view_id=<?php echo $o['order_id']; ?>&status=<?php echo $status_filter; ?>&type=<?php echo $type_filter; ?>" class="btn btn-link btn-xs p-0 text-decoration-none">Review</a></td>
@@ -206,13 +206,13 @@ require_once __DIR__ . '/../includes/header.php';
                         <?php foreach ($view_items as $item): ?>
                             <div class="d-flex justify-content-between align-items-center bg-white p-2 rounded shadow-sm">
                                 <div class="d-flex align-items-center gap-2">
-                                    <img src="<?php echo htmlspecialchars($item['image_url']); ?>" alt="" class="rounded" style="width: 35px; height: 35px; object-fit: cover;">
+                                    <img src="<?php echo htmlspecialchars(getProductImage($item['image_url'])); ?>" alt="" class="rounded" style="width: 35px; height: 35px; object-fit: cover;">
                                     <div>
                                         <h6 class="mb-0 small fw-bold text-dark"><?php echo htmlspecialchars($item['name']); ?></h6>
-                                        <small class="text-muted"><?php echo $item['quantity']; ?> × $<?php echo number_format($item['unit_price'], 2); ?></small>
+                                        <small class="text-muted"><?php echo $item['quantity']; ?> × <?php echo CURRENCY_SYMBOL; ?><?php echo number_format($item['unit_price'], 2); ?></small>
                                     </div>
                                 </div>
-                                <span class="fw-bold small text-primary">$<?php echo number_format($item['total_price'], 2); ?></span>
+                                <span class="fw-bold small text-primary"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($item['total_price'], 2); ?></span>
                             </div>
                         <?php endforeach; ?>
                     </div>
@@ -221,7 +221,7 @@ require_once __DIR__ . '/../includes/header.php';
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <span class="fw-bold text-dark">Grand Total:</span>
-                        <span class="fw-bold text-primary fs-5">$<?php echo number_format($view_order['total_amount'], 2); ?></span>
+                        <span class="fw-bold text-primary fs-5"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($view_order['total_amount'], 2); ?></span>
                     </div>
                     
                     <!-- Change Status Form (Only allowed if order type is online, POS orders are instantly completed) -->

@@ -75,6 +75,7 @@ require_once __DIR__ . '/../includes/header.php';
         <a href="orders.php" class="btn btn-sm btn-orchid-outline"><i class="bi bi-receipt"></i> Orders List</a>
         <a href="reviews.php" class="btn btn-sm btn-orchid-outline"><i class="bi bi-star"></i> Reviews Moderation (<?php echo $pending_reviews; ?>)</a>
         <a href="users.php" class="btn btn-sm btn-orchid-outline"><i class="bi bi-people"></i> Manage Staff & Users</a>
+        <a href="cashier_logs.php" class="btn btn-sm btn-orchid-outline"><i class="bi bi-journal-text"></i> Cashier Logs</a>
     </div>
 
     <!-- Stats Row -->
@@ -83,7 +84,7 @@ require_once __DIR__ . '/../includes/header.php';
             <div class="card stat-card bg-orchid-grad shadow-sm">
                 <h6 class="text-white-50 text-uppercase small fw-bold">Gross Revenue</h6>
                 <div class="d-flex align-items-center justify-content-between mt-2">
-                    <span class="fs-2 fw-bold">$<?php echo number_format($gross_sales, 2); ?></span>
+                    <span class="fs-2 fw-bold"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($gross_sales, 2); ?></span>
                     <i class="bi bi-wallet2 fs-2 text-white-50"></i>
                 </div>
             </div>
@@ -125,7 +126,7 @@ require_once __DIR__ . '/../includes/header.php';
         <!-- Sales line Chart -->
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm rounded-4 p-4">
-                <h5 class="fw-bold mb-4 brand-font text-dark"><i class="bi bi-graph-up-arrow text-primary me-2"></i>Weekly Sales Volume ($)</h5>
+                <h5 class="fw-bold mb-4 brand-font text-dark"><i class="bi bi-graph-up-arrow text-primary me-2"></i>Weekly Sales Volume (<?php echo CURRENCY_SYMBOL; ?>)</h5>
                 <div style="height: 320px; position: relative;">
                     <canvas id="weeklySalesChart"></canvas>
                 </div>
@@ -178,7 +179,7 @@ require_once __DIR__ . '/../includes/header.php';
                     <tbody>
                         <?php foreach ($low_stock_items as $item): ?>
                             <tr>
-                                <td><img src="<?php echo htmlspecialchars($item['image_url']); ?>" alt="" class="rounded" style="width: 45px; height: 45px; object-fit: cover;"></td>
+                                <td><img src="<?php echo htmlspecialchars(getProductImage($item['image_url'])); ?>" alt="" class="rounded" style="width: 45px; height: 45px; object-fit: cover;"></td>
                                 <td><b><?php echo htmlspecialchars($item['name']); ?></b></td>
                                 <td><span class="badge bg-secondary-subtle text-secondary"><?php echo htmlspecialchars($item['category_name']); ?></span></td>
                                 <td>
@@ -210,7 +211,7 @@ require_once __DIR__ . '/../includes/header.php';
         data: {
             labels: labels,
             datasets: [{
-                label: 'Gross Sales ($)',
+                label: 'Gross Sales (<?php echo CURRENCY_SYMBOL; ?>)',
                 data: values,
                 backgroundColor: 'rgba(123, 44, 191, 0.1)',
                 borderColor: '#7b2cbf',

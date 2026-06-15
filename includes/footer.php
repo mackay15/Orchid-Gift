@@ -19,7 +19,7 @@ $base = str_replace('\\', '/', rtrim($base, '/'));
                         <img src="<?php echo $base; ?>/assets/orchid_logo.png" alt="Orchid Logo" class="brand-logo">
                         <div>
                             <h5 class="mb-1 brand-font">ORCHID</h5>
-                            <small class="text-muted">Gift & More Boutique</small>
+                            <small class="text-muted">Gift & More</small>
                         </div>
                     </div>
                     <p class="text-muted small">Where every gift feels personal. We create luxurious gift experiences with flowers, custom hampers, designer treats, and keepsakes for every occasion.</p>
@@ -53,8 +53,8 @@ $base = str_replace('\\', '/', rtrim($base, '/'));
                 
                 <div class="col-lg-3 col-md-6">
                     <h6 class="text-white mb-3">Shop Address</h6>
-                    <p class="text-muted small mb-2"><i class="bi bi-geo-alt-fill me-2 text-primary"></i> 45 Orchid Garden St, POS Plaza, Suite B</p>
-                    <p class="text-muted small mb-2"><i class="bi bi-telephone-fill me-2 text-primary"></i> +1 (233) 555-ORCHID</p>
+                    <p class="text-muted small mb-2"><i class="bi bi-geo-alt-fill me-2 text-primary"></i> ORCHID GIFT & MORE ,Mawuli estate second gate opposite Global Evangelical Church,HO</p>
+                    <p class="text-muted small mb-2"><i class="bi bi-telephone-fill me-2 text-primary"></i> +(233) 59 2191 781 -ORCHID</p>
                     <p class="text-muted small mb-2"><i class="bi bi-clock-fill me-2 text-primary"></i> Mon - Sat: 8:00 AM - 9:00 PM</p>
                 </div>
             </div>

@@ -27,6 +27,8 @@ $query = "SELECT r.*, u.full_name, p.name as product_name, p.image_url
           JOIN products p ON r.product_id = p.product_id 
           ORDER BY FIELD(r.status, 'Pending', 'Approved', 'Rejected'), r.created_at DESC";
 $reviews = $pdo->query($query)->fetchAll();
+
+require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <div class="container py-5">
@@ -63,7 +65,7 @@ $reviews = $pdo->query($query)->fetchAll();
                             <tr>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
-                                        <img src="<?php echo htmlspecialchars($rev['image_url']); ?>" alt="" class="rounded" style="width: 40px; height: 40px; object-fit: cover;">
+                                        <img src="<?php echo htmlspecialchars(getProductImage($rev['image_url'])); ?>" alt="" class="rounded" style="width: 40px; height: 40px; object-fit: cover;">
                                         <div class="small fw-bold text-dark text-truncate" style="max-width: 150px;"><?php echo htmlspecialchars($rev['product_name']); ?></div>
                                     </div>
                                 </td>

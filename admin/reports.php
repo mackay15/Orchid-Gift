@@ -16,7 +16,7 @@ if (isset($_GET['export']) && $_GET['export'] === 'csv') {
     $output = fopen('php://output', 'w');
     
     // Header Row
-    fputcsv($output, ['Sale ID', 'Order ID', 'Channel', 'Customer Name', 'Cashier/Attendant', 'Total Amount ($)', 'Payment Option', 'Transaction Reference ID', 'Date/Time']);
+    fputcsv($output, ['Sale ID', 'Order ID', 'Channel', 'Customer Name', 'Cashier/Attendant', 'Total Amount (' . CURRENCY_SYMBOL . ')', 'Payment Option', 'Transaction Reference ID', 'Date/Time']);
     
     // Fetch data
     $query = "SELECT s.sales_id, s.order_id, o.order_type, u.full_name as customer_name, c.full_name as cashier_name, s.total_amount, s.payment_method, s.transaction_id, s.created_at 
@@ -80,22 +80,22 @@ require_once __DIR__ . '/../includes/header.php';
                             <tr>
                                 <td><i class="bi bi-phone-vibrate text-primary fs-5 me-2"></i><b>Mobile Money (Momo)</b></td>
                                 <td class="small text-muted">All online & walk-in MoMo payments</td>
-                                <td class="fw-bold text-primary">$<?php echo number_format($momo_revenue, 2); ?></td>
+                                <td class="fw-bold text-primary"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($momo_revenue, 2); ?></td>
                             </tr>
                             <tr>
                                 <td><i class="bi bi-credit-card-2-back text-primary fs-5 me-2"></i><b>Card Payments</b></td>
                                 <td class="small text-muted">All Visa, Mastercards, POS cards</td>
-                                <td class="fw-bold text-primary">$<?php echo number_format($card_revenue, 2); ?></td>
+                                <td class="fw-bold text-primary"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($card_revenue, 2); ?></td>
                             </tr>
                             <tr>
                                 <td><i class="bi bi-cash-stack text-success fs-5 me-2"></i><b>Cash Transactions</b></td>
                                 <td class="small text-muted">Physical registers & COD payments</td>
-                                <td class="fw-bold text-success">$<?php echo number_format($cash_revenue, 2); ?></td>
+                                <td class="fw-bold text-success"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($cash_revenue, 2); ?></td>
                             </tr>
                             <tr class="table-light">
                                 <td><b>TOTAL REVENUE</b></td>
                                 <td>All channels aggregate</td>
-                                <td class="fw-bold text-primary fs-5">$<?php echo number_format($total_revenue, 2); ?></td>
+                                <td class="fw-bold text-primary fs-5"><?php echo CURRENCY_SYMBOL; ?><?php echo number_format($total_revenue, 2); ?></td>
                             </tr>
                         </tbody>
                     </table>
