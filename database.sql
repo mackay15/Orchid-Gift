@@ -144,11 +144,11 @@ CREATE TABLE IF NOT EXISTS `cashier_logs` (
 -- 3. SEEDING INITIAL DATA
 -- --------------------------------------------------------
 
--- Seed Default Accounts (Passwords: username + '123')
+-- Seed Default Accounts (Passwords: admin123, cashier123, customer123)
 INSERT INTO `users` (`username`, `password`, `email`, `full_name`, `role`, `status`) VALUES 
-('admin', '$2y$10$tMh4E.WJ3s.tD5vXwPswxO.e5q6rPj6g8hK.xLnY5jO.l7hP6x7fK', 'admin@orchid.com', 'Orchid Admin', 'admin', 'Active'),
-('cashier', '$2y$10$wK1m.YJ9s.tD5vXwPswxO.e5q6rPj6g8hK.xLnY5jO.l7hP6x7fK', 'cashier@orchid.com', 'Sarah Cashier', 'cashier', 'Active'),
-('customer', '$2y$10$mK2m.ZJ9s.tD5vXwPswxO.e5q6rPj6g8hK.xLnY5jO.l7hP6x7fK', 'customer@orchid.com', 'John Doe Customer', 'customer', 'Active');
+('admin', '$2a$10$iLcQ767KAbD8CrXfdHu2IOKML4a0K7oj5cD6B14GVXNmFr4pDGHOy', 'admin@orchid.com', 'Orchid Admin', 'admin', 'Active'),
+('cashier', '$2a$10$ld0hgj8Wm0ZlkNxIjpGJyu19zsUDPNzFFFcduHzaHeoxkIzlebPA6', 'cashier@orchid.com', 'Sarah Cashier', 'cashier', 'Active'),
+('customer', '$2a$10$PKWWtWI4QNdCxU/1upGgUecigH9rJfyPDRejylL5BhWJ02qF4BzSe', 'customer@orchid.com', 'John Doe Customer', 'customer', 'Active');
 
 -- Seed Default Categories
 INSERT INTO `categories` (`category_id`, `name`, `description`) VALUES 

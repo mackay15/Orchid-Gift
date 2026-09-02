@@ -1,0 +1,512 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-gray-800;
+  }
+  body {
+    @apply bg-gray-950 text-gray-100 font-sans antialiased;
+  }
+  :root {
+    --orchid-primary: #5a189a;
+    --orchid-light: #9133ff;
+    --orchid-glow: rgba(90, 24, 154, 0.4);
+  }
+}
+
+@layer components {
+  /* ── Glassmorphism Card ─────────────── */
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300 hover:bg-white/10 hover:border-orchid-500/30 hover:-translate-y-1;
+    &:hover { box-shadow: 0 20px 60px rgba(90, 24, 154, 0.3), inset 0 1px 0 rgba(255,255,255,0.15); }
+  }
+
+  /* ── Orchid Button ──────────────────── */
+  .btn-orchid {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-sm
+           bg-orchid-gradient text-white shadow-orchid transition-all duration-300
+           hover:shadow-orchid-lg hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-semibold text-sm
+           bg-white/5 border border-white/20 text-gray-200 transition-all duration-300
+           hover:bg-white/10 hover:border-orchid-500/50 hover:text-white active:scale-95;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm
+           bg-red-500/20 border border-red-500/30 text-red-400 transition-all duration-200
+           hover:bg-red-500/30 hover:text-red-300 active:scale-95;
+  }
+
+  .btn-success {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm
+           bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 transition-all duration-200
+           hover:bg-emerald-500/30 hover:text-emerald-300 active:scale-95;
+  }
+
+  /* ── Input Fields ───────────────────── */
+  .input-orchid {
+    @apply w-full px-4 py-3 rounded-xl bg-white/5 border border-white/15 text-gray-100
+           placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-orchid-500/50 focus:border-orchid-500/50
+           transition-all duration-200;
+  }
+
+  .input-label {
+    @apply block text-sm font-medium text-gray-300 mb-1.5;
+  }
+
+  /* ── Stat Card ──────────────────────── */
+  .stat-card {
+    @apply glass-card p-5 flex flex-col gap-2;
+  }
+
+  /* ── Page Wrapper ───────────────────── */
+  .page-wrapper {
+    @apply min-h-screen bg-gradient-to-br from-gray-950 via-orchid-950/30 to-gray-950;
+  }
+
+  /* ── Badge ──────────────────────────── */
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  .badge-orchid  { @apply badge bg-orchid-800/40 text-orchid-300 border border-orchid-700/30; }
+  .badge-success { @apply badge bg-emerald-800/40 text-emerald-300 border border-emerald-700/30; }
+  .badge-warning { @apply badge bg-amber-800/40 text-amber-300 border border-amber-700/30; }
+  .badge-danger  { @apply badge bg-red-800/40 text-red-300 border border-red-700/30; }
+  .badge-gray    { @apply badge bg-gray-800/60 text-gray-400 border border-gray-700/30; }
+
+  /* ── Sidebar Link ───────────────────── */
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-400
+           transition-all duration-200 hover:bg-orchid-800/30 hover:text-orchid-300;
+  }
+  .sidebar-link.active {
+    @apply bg-orchid-800/40 text-orchid-200 border border-orchid-700/20;
+  }
+
+  /* ── Table ──────────────────────────── */
+  .orchid-table {
+    @apply w-full text-sm text-left;
+  }
+  .orchid-table thead tr {
+    @apply border-b border-white/10 text-gray-400;
+  }
+  .orchid-table thead th {
+    @apply px-4 py-3 font-medium uppercase tracking-wider text-xs;
+  }
+  .orchid-table tbody tr {
+    @apply border-b border-white/5 transition-colors hover:bg-white/5;
+  }
+  .orchid-table tbody td {
+    @apply px-4 py-3 text-gray-300;
+  }
+
+  /* ── Modal Overlay ──────────────────── */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4;
+  }
+  .modal-box {
+    @apply glass-card p-6 w-full max-w-md animate-slide-up;
+  }
+}
+
+/* ── Custom Scrollbar ───────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { @apply bg-orchid-800/50 rounded-full; }
+::-webkit-scrollbar-thumb:hover { @apply bg-orchid-700/70; }
+
+/* ── Glow Effect ────────────────────────── */
+.orchid-glow {
+  box-shadow: 0 0 30px rgba(90, 24, 154, 0.5), 0 0 60px rgba(90, 24, 154, 0.2);
+}
+
+/* ════════════════════════════════════════════════════════════
+   HOMEPAGE LIGHT THEME — independent of dark admin theme
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Typography ─────────────────────────── */
+
+/* ── Home Page Reset ────────────────────── */
+.home-page {
+  background-color: #F8F5F2;
+  color: #2B2B2B;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ── Announcement Bar ───────────────────── */
+.announcement-bar {
+  background-color: #2B2B2B;
+  color: #F8F5F2;
+  font-size: 12px;
+  padding: 8px 0;
+  letter-spacing: 0.02em;
+}
+
+/* ── Home Navbar ────────────────────────── */
+.home-navbar {
+  background: rgba(255,255,255,0.95);
+  border-bottom: 1px solid #E8E2DE;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  transition: box-shadow 0.3s ease;
+}
+.home-navbar.scrolled {
+  box-shadow: 0 2px 20px rgba(43,43,43,0.08);
+}
+.home-nav-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6B6B6B;
+  padding: 8px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: color 0.2s ease, background 0.2s ease;
+  position: relative;
+}
+.home-nav-link:hover { color: #B85C73; }
+.home-nav-link.active { color: #B85C73; font-weight: 600; }
+.home-nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 2px;
+  background: #B85C73;
+  border-radius: 2px;
+}
+
+/* ── Buttons ─────────────────────────────── */
+.home-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #B85C73;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 14px 28px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+}
+.home-btn-primary:hover {
+  background-color: #a04f65;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(184,92,115,0.3);
+  color: #fff;
+}
+.home-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: transparent;
+  color: #2B2B2B;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 13px 28px;
+  border-radius: 8px;
+  border: 1.5px solid #E8E2DE;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
+}
+.home-btn-secondary:hover {
+  border-color: #B85C73;
+  color: #B85C73;
+  background: rgba(184,92,115,0.04);
+}
+
+/* ── Section Header ─────────────────────── */
+.home-section-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: #B85C73;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.home-section-label::before,
+.home-section-label::after {
+  content: '';
+  flex: 0 0 32px;
+  height: 1px;
+  background: #D9A6A6;
+}
+.home-section-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(26px, 4vw, 40px);
+  font-weight: 700;
+  color: #2B2B2B;
+  line-height: 1.2;
+  text-align: center;
+  margin: 0 0 8px;
+}
+.home-section-subtitle {
+  font-size: 14px;
+  color: #6B6B6B;
+  text-align: center;
+  margin: 0 0 48px;
+}
+
+/* ── Product Card (Light) ───────────────── */
+.home-product-card {
+  background: #ffffff;
+  border: 1px solid #E8E2DE;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+.home-product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 32px rgba(43,43,43,0.1);
+}
+.home-product-card .card-image-wrap {
+  overflow: hidden;
+  position: relative;
+  aspect-ratio: 1/1;
+  background: #F0EAE4;
+}
+.home-product-card .card-image-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.home-product-card:hover .card-image-wrap img {
+  transform: scale(1.07);
+}
+.home-product-card .card-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #B85C73;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+.home-product-card .card-wish {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid #E8E2DE;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+.home-product-card .card-wish:hover {
+  background: #fce8ed;
+  border-color: #B85C73;
+}
+.home-product-card .card-body {
+  padding: 16px;
+}
+.home-product-card .card-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #2B2B2B;
+  margin: 0 0 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.home-product-card .card-stars {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #6B6B6B;
+  margin-bottom: 10px;
+}
+.home-product-card .card-price {
+  font-size: 18px;
+  font-weight: 700;
+  color: #B85C73;
+}
+
+/* ── Category Card ──────────────────────── */
+.home-category-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 12px;
+  background: #ffffff;
+  border: 1px solid #E8E2DE;
+  border-radius: 14px;
+  text-decoration: none;
+  color: #2B2B2B;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  cursor: pointer;
+}
+.home-category-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(184,92,115,0.12);
+  border-color: #D9A6A6;
+  color: #B85C73;
+}
+.home-category-card .cat-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #F8F5F2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.25s ease;
+}
+.home-category-card:hover .cat-icon-wrap {
+  background: #fce8ed;
+}
+.home-category-card .cat-name {
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  transition: color 0.25s ease;
+}
+
+/* ── Promo Card ─────────────────────────── */
+.home-promo-card {
+  border-radius: 14px;
+  padding: 36px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1px solid transparent;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.home-promo-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(43,43,43,0.08);
+}
+
+/* ── Occasion Card ──────────────────────── */
+.home-occasion-card {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  cursor: pointer;
+}
+.home-occasion-card img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.home-occasion-card:hover img { transform: scale(1.07); }
+.home-occasion-card .occ-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(43,43,43,0.72) 0%, rgba(43,43,43,0.1) 60%, transparent 100%);
+  transition: background 0.3s ease;
+}
+.home-occasion-card:hover .occ-overlay {
+  background: linear-gradient(to top, rgba(184,92,115,0.7) 0%, rgba(43,43,43,0.1) 60%, transparent 100%);
+}
+.home-occasion-card .occ-content {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 20px 16px;
+  text-align: center;
+  color: #fff;
+}
+.home-occasion-card .occ-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* ── Newsletter ─────────────────────────── */
+.home-newsletter {
+  background: linear-gradient(135deg, #fce8ed 0%, #F8F5F2 50%, #f5d3da 100%);
+  border-radius: 20px;
+  border: 1px solid #E8E2DE;
+  padding: 56px 48px;
+}
+
+/* ── Trust Bar ──────────────────────────── */
+.home-trust-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  padding: 28px 20px;
+}
+
+/* ── Home Footer ────────────────────────── */
+.home-footer {
+  background: #2B2B2B;
+  color: #F8F5F2;
+  padding-top: 64px;
+}
+.home-footer-link {
+  color: #9B9B9B;
+  font-size: 13px;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  display: block;
+  margin-bottom: 10px;
+}
+.home-footer-link:hover { color: #D9A6A6; }
+
+/* ── Benefits bar ───────────────────────── */
+.home-benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 24px 20px;
+  flex: 1;
+}
+.home-benefit-divider {
+  width: 1px;
+  height: 48px;
+  background: #E8E2DE;
+}
+
+/* ── Animations ─────────────────────────── */
+@keyframes floatSlow {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-12px) rotate(5deg); }
+}
+@keyframes floatMed {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-8px) rotate(-4deg); }
+}
+.float-slow { animation: floatSlow 5s ease-in-out infinite; }
+.float-med  { animation: floatMed  4s ease-in-out infinite; }

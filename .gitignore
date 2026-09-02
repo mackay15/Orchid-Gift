@@ -1,26 +1,41 @@
-# ORCHID - Git Ignore Rules
+# Environment variables
+.env
+.env.local
+.env.*.local
+!.env.example
 
-# Ignore sensitive config overrides
-includes/config.php
+# Dependencies
+node_modules/
+client/node_modules/
+server/node_modules/
 
-# Ignore XAMPP error logs
+# Production build outputs
+dist/
+client/dist/
+build/
+
+# Database & Volume data
+postgres_data/
+pgadmin_data/
+
+# Logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 error_log
 
-# Ignore OS junk files
+# OS junk files
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# Ignore IDE files
+# IDE & Editor files
 .vscode/
 .idea/
 *.sublime-project
 *.sublime-workspace
 
-# Ignore uploaded media (if any)
+# Uploads & Assets
 assets/uploads/
-
-# Ignore composer vendor (if added later)
-vendor/
-composer.lock
+server/uploads/
