@@ -48,14 +48,16 @@ export default function AdminOrders() {
   const filteredOrders = orders.filter((o) => !filterStatus || o.order_status === filterStatus);
 
   return (
-    <div className="min-h-screen bg-gray-950 flex text-gray-100">
+    <div className="min-h-screen bg-cream-50 flex text-ink-900 font-sans selection:bg-rose-200 selection:text-ink-900">
       <Sidebar />
 
       <main className="w-full min-w-0 pt-20 lg:pt-8 lg:pl-64 flex-1 p-4 sm:p-6 lg:p-8">
         <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
           <div>
-            <h1 className="font-display font-bold text-3xl text-white">Orders Management</h1>
-            <p className="text-sm text-gray-400">Process online & POS orders and manage fulfillment stages</p>
+            <h1 className="font-bold text-3xl text-ink-900" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+              Orders Management
+            </h1>
+            <p className="text-sm text-ink-600 mt-1">Process online & POS orders and manage fulfillment stages</p>
           </div>
 
           <div className="flex gap-2">
@@ -63,10 +65,10 @@ export default function AdminOrders() {
               <button
                 key={st}
                 onClick={() => setFilterStatus(st)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors ${
                   filterStatus === st
-                    ? 'bg-orchid-800/40 text-orchid-200 border border-orchid-700/30'
-                    : 'bg-white/5 text-gray-400'
+                    ? 'bg-rose-100 text-rose-700 border border-rose-300'
+                    : 'bg-white text-ink-600 border border-cream-200 hover:bg-cream-100'
                 }`}
               >
                 {st || 'All Orders'}
@@ -76,100 +78,109 @@ export default function AdminOrders() {
         </div>
 
         {loading ? (
-          <div className="glass-card h-96 animate-pulse" />
+          <div className="bg-white border border-cream-200 rounded-2xl p-6 h-96 animate-pulse shadow-sm" />
         ) : (
-          <div className="glass-card overflow-hidden">
-            <table className="orchid-table">
-              <thead>
-                <tr>
-                  <th>Order #</th>
-                  <th>Customer</th>
-                  <th>Type</th>
-                  <th>Amount</th>
-                  <th>Fulfillment Stage</th>
-                  <th>Payment Status</th>
-                  <th className="text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredOrders.map((o) => (
-                  <tr key={o.order_id}>
-                    <td className="font-bold text-white">#{o.order_id}</td>
-                    <td className="text-xs text-gray-300">{o.customer_name || 'Walk-in Guest'}</td>
-                    <td><span className="badge-orchid text-xs">{o.order_type}</span></td>
-                    <td className="font-bold text-orchid-300">GH₵{parseFloat(o.total_amount).toFixed(2)}</td>
-                    <td>
-                      <select
-                        value={o.order_status}
-                        onChange={(e) => handleUpdateStatus(o.order_id, e.target.value, undefined)}
-                        className="bg-gray-900 border border-white/15 text-xs text-white rounded-lg p-1.5 focus:outline-none"
-                      >
-                        <option value="Pending">Pending</option>
-                        <option value="Processing">Processing</option>
-                        <option value="Completed">Completed</option>
-                        <option value="Cancelled">Cancelled</option>
-                      </select>
-                    </td>
-                    <td>
-                      <select
-                        value={o.payment_status}
-                        onChange={(e) => handleUpdateStatus(o.order_id, undefined, e.target.value)}
-                        className="bg-gray-900 border border-white/15 text-xs text-white rounded-lg p-1.5 focus:outline-none"
-                      >
-                        <option value="Unpaid">Unpaid</option>
-                        <option value="Paid">Paid</option>
-                      </select>
-                    </td>
-                    <td className="text-right">
-                      <button
-                        onClick={() => handleViewOrderDetail(o.order_id)}
-                        className="btn-ghost py-1 px-3 text-xs"
-                      >
-                        View Items
-                      </button>
-                    </td>
+          <div className="bg-white border border-cream-200 rounded-2xl shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead className="bg-cream-50/50 border-b border-cream-200">
+                  <tr>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-ink-500">Order #</th>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-ink-500">Customer</th>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-ink-500">Type</th>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-ink-500">Amount</th>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-ink-500">Fulfillment Stage</th>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-ink-500">Payment Status</th>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-ink-500 text-right">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-cream-100">
+                  {filteredOrders.map((o) => (
+                    <tr key={o.order_id} className="hover:bg-cream-50/50 transition-colors">
+                      <td className="px-6 py-4 font-semibold text-ink-900">#{o.order_id}</td>
+                      <td className="px-6 py-4 text-sm text-ink-600">{o.customer_name || 'Walk-in Guest'}</td>
+                      <td className="px-6 py-4">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-cream-100 text-ink-700 border border-cream-200">
+                          {o.order_type}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 font-bold text-ink-900">GH₵{parseFloat(o.total_amount).toFixed(2)}</td>
+                      <td className="px-6 py-4">
+                        <select
+                          value={o.order_status}
+                          onChange={(e) => handleUpdateStatus(o.order_id, e.target.value, undefined)}
+                          className="bg-cream-100 border border-cream-300 text-ink-900 text-xs font-semibold rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-rose-300"
+                        >
+                          <option value="Pending">Pending</option>
+                          <option value="Processing">Processing</option>
+                          <option value="Completed">Completed</option>
+                          <option value="Cancelled">Cancelled</option>
+                        </select>
+                      </td>
+                      <td className="px-6 py-4">
+                        <select
+                          value={o.payment_status}
+                          onChange={(e) => handleUpdateStatus(o.order_id, undefined, e.target.value)}
+                          className="bg-cream-100 border border-cream-300 text-ink-900 text-xs font-semibold rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-rose-300"
+                        >
+                          <option value="Unpaid">Unpaid</option>
+                          <option value="Paid">Paid</option>
+                        </select>
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <button
+                          onClick={() => handleViewOrderDetail(o.order_id)}
+                          className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-cream-100 text-ink-700 hover:bg-cream-200 transition-colors"
+                        >
+                          View Items
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
         {/* Order Details Modal */}
         {selectedOrder && (
-          <div className="modal-overlay" onClick={() => setSelectedOrder(null)}>
-            <div className="modal-box max-w-lg" onClick={(e) => e.stopPropagation()}>
-              <div className="flex justify-between items-center pb-4 border-b border-white/10 mb-4">
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+            <div className="bg-white border border-cream-300 rounded-2xl p-6 sm:p-8 max-w-lg w-full shadow-2xl animate-slide-up" onClick={(e) => e.stopPropagation()}>
+              <div className="flex justify-between items-center pb-4 border-b border-cream-200 mb-4">
                 <div>
-                  <h3 className="font-display font-bold text-lg text-white">
+                  <h3 className="font-bold text-xl text-ink-900" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
                     Order #{selectedOrder.order_id} Items
                   </h3>
-                  <p className="text-xs text-gray-400">
+                  <p className="text-sm text-ink-600 mt-1">
                     Customer: {selectedOrder.customer_name || 'Walk-in Guest'} • {selectedOrder.order_type}
                   </p>
                 </div>
-                <button onClick={() => setSelectedOrder(null)} className="text-gray-400 hover:text-white font-bold p-1">
+                <button 
+                  onClick={() => setSelectedOrder(null)} 
+                  className="p-1 rounded-lg text-ink-400 hover:text-ink-700 hover:bg-cream-100 transition-colors"
+                >
                   ✕
                 </button>
               </div>
 
               <div className="space-y-3 max-h-60 overflow-y-auto pr-1 mb-4">
                 {selectedOrder.items?.map((item) => (
-                  <div key={item.item_id} className="p-3 rounded-xl bg-white/5 border border-white/10 flex justify-between items-center text-xs">
+                  <div key={item.item_id} className="p-4 rounded-xl bg-cream-50 border border-cream-200 flex justify-between items-center text-sm">
                     <div>
-                      <p className="text-white font-semibold">{item.name}</p>
-                      <p className="text-gray-400">Qty: {item.quantity} x GH₵{parseFloat(item.unit_price).toFixed(2)}</p>
+                      <p className="text-ink-900 font-semibold">{item.name}</p>
+                      <p className="text-ink-600 mt-0.5">Qty: {item.quantity} x GH₵{parseFloat(item.unit_price).toFixed(2)}</p>
                     </div>
-                    <span className="font-bold text-orchid-300">
+                    <span className="font-bold text-ink-900">
                       GH₵{parseFloat(item.total_price).toFixed(2)}
                     </span>
                   </div>
                 ))}
               </div>
 
-              <div className="pt-3 border-t border-white/10 flex justify-between items-center">
-                <span className="text-xs text-gray-400">Total Order Amount</span>
-                <span className="font-bold text-lg text-emerald-400">
+              <div className="pt-4 border-t border-cream-200 flex justify-between items-center">
+                <span className="text-sm font-semibold uppercase tracking-wider text-ink-600">Total Order Amount</span>
+                <span className="font-bold text-xl text-emerald-600">
                   GH₵{parseFloat(selectedOrder.total_amount).toFixed(2)}
                 </span>
               </div>

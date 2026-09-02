@@ -61,83 +61,117 @@ export default function AdminCategories() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 flex text-gray-100">
+    <div className="min-h-screen bg-cream-50 flex text-ink-900 font-sans selection:bg-rose-200 selection:text-ink-900">
       <Sidebar />
 
       <main className="w-full min-w-0 pt-20 lg:pt-8 lg:pl-64 flex-1 p-4 sm:p-6 lg:p-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="font-display font-bold text-3xl text-white">Categories Management</h1>
-            <p className="text-sm text-gray-400">Manage gift grouping categories</p>
+            <h1 className="font-bold text-3xl text-ink-900" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+              Categories Management
+            </h1>
+            <p className="text-sm text-ink-600 mt-1">Manage gift grouping categories</p>
           </div>
-          <button onClick={() => handleOpenModal()} className="btn-orchid text-sm py-2.5 px-4">
+          <button 
+            onClick={() => handleOpenModal()} 
+            className="bg-rose-600 hover:bg-rose-700 text-white text-sm font-semibold py-2.5 px-4 rounded-xl shadow-sm hover:shadow-md transition-all active:scale-[0.98]"
+          >
             + New Category
           </button>
         </div>
 
         {loading ? (
-          <div className="glass-card h-64 animate-pulse" />
+          <div className="bg-white border border-cream-200 rounded-2xl p-6 h-64 animate-pulse shadow-sm" />
         ) : (
-          <div className="glass-card overflow-hidden">
-            <table className="orchid-table">
-              <thead>
-                <tr>
-                  <th>Category Name</th>
-                  <th>Description</th>
-                  <th className="text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {categories.map((c) => (
-                  <tr key={c.category_id}>
-                    <td className="font-semibold text-white">{c.name}</td>
-                    <td className="text-xs text-gray-400">{c.description}</td>
-                    <td className="text-right space-x-2">
-                      <button onClick={() => handleOpenModal(c)} className="btn-ghost py-1 px-3 text-xs">
-                        Edit
-                      </button>
-                      <button onClick={() => handleDelete(c.category_id)} className="btn-danger py-1 px-3 text-xs">
-                        Delete
-                      </button>
-                    </td>
+          <div className="bg-white border border-cream-200 rounded-2xl shadow-sm overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead className="bg-cream-50/50 border-b border-cream-200">
+                  <tr>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-ink-500">Category Name</th>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-ink-500">Description</th>
+                    <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-ink-500 text-right">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-cream-100">
+                  {categories.map((c) => (
+                    <tr key={c.category_id} className="hover:bg-cream-50/50 transition-colors">
+                      <td className="px-6 py-4 font-semibold text-ink-900">{c.name}</td>
+                      <td className="px-6 py-4 text-sm text-ink-600">{c.description}</td>
+                      <td className="px-6 py-4 text-right space-x-2">
+                        <button 
+                          onClick={() => handleOpenModal(c)} 
+                          className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-cream-100 text-ink-700 hover:bg-cream-200 transition-colors"
+                        >
+                          Edit
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(c.category_id)} 
+                          className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-rose-50 text-rose-600 border border-rose-200 hover:bg-rose-100 transition-colors"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
         {modalOpen && (
-          <div className="modal-overlay" onClick={() => setModalOpen(false)}>
-            <div className="modal-box max-w-md" onClick={(e) => e.stopPropagation()}>
-              <h3 className="font-display font-bold text-lg text-white mb-4">
-                {editingCat ? 'Edit Category' : 'Add Category'}
-              </h3>
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+            <div className="bg-white border border-cream-300 rounded-2xl p-6 sm:p-8 max-w-md w-full shadow-2xl animate-slide-up" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between border-b border-cream-200 pb-4 mb-6">
+                <h3 className="font-bold text-xl text-ink-900" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+                  {editingCat ? 'Edit Category' : 'Add Category'}
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setModalOpen(false)}
+                  className="p-1 rounded-lg text-ink-400 hover:text-ink-700 hover:bg-cream-100 transition-colors"
+                >
+                  ✕
+                </button>
+              </div>
+              
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="input-label">Category Name</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-ink-900 mb-1">
+                    Category Name *
+                  </label>
                   <input
                     type="text"
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="input-orchid py-2 text-sm"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-cream-100 border border-cream-300 text-ink-900 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300 focus:bg-white transition-all"
                   />
                 </div>
                 <div>
-                  <label className="input-label">Description</label>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-ink-900 mb-1">
+                    Description
+                  </label>
                   <textarea
                     rows={3}
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    className="input-orchid text-sm"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-cream-100 border border-cream-300 text-ink-900 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300 focus:bg-white transition-all"
                   />
                 </div>
-                <div className="flex justify-end gap-2 pt-2">
-                  <button type="button" onClick={() => setModalOpen(false)} className="btn-ghost py-2 px-4 text-xs">
+                <div className="flex justify-end gap-3 pt-4 border-t border-cream-100 mt-6">
+                  <button 
+                    type="button" 
+                    onClick={() => setModalOpen(false)} 
+                    className="px-4 py-2 text-sm font-semibold text-ink-600 bg-cream-100 hover:bg-cream-200 rounded-xl transition-colors"
+                  >
                     Cancel
                   </button>
-                  <button type="submit" className="btn-orchid py-2 px-4 text-xs">
+                  <button 
+                    type="submit" 
+                    className="px-4 py-2 text-sm font-semibold text-white bg-rose-600 hover:bg-rose-700 rounded-xl shadow-sm transition-all active:scale-[0.98]"
+                  >
                     Save Category
                   </button>
                 </div>
