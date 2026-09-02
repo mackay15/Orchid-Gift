@@ -33,14 +33,16 @@ export default function AdminReviews() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 flex text-gray-100">
+    <div className="min-h-screen bg-cream-50 flex text-ink-900 font-sans selection:bg-rose-200 selection:text-ink-900">
       <Sidebar />
 
       <main className="w-full min-w-0 pt-20 lg:pt-8 lg:pl-64 flex-1 p-4 sm:p-6 lg:p-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="font-display font-bold text-3xl text-white">Review Moderation</h1>
-            <p className="text-sm text-gray-400">Approve or reject customer product reviews</p>
+            <h1 className="font-bold text-3xl text-ink-900" style={{ fontFamily: "'Playfair Display', Georgia, serif" }}>
+              Review Moderation
+            </h1>
+            <p className="text-sm text-ink-600 mt-1">Approve or reject customer product reviews</p>
           </div>
 
           <div className="flex gap-2">
@@ -48,8 +50,10 @@ export default function AdminReviews() {
               <button
                 key={st}
                 onClick={() => setFilter(st)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold ${
-                  filter === st ? 'bg-orchid-800/40 text-orchid-200 border border-orchid-700/30' : 'bg-white/5 text-gray-400'
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                  filter === st 
+                    ? 'bg-rose-100 text-rose-700 border border-rose-300' 
+                    : 'bg-white text-ink-600 border border-cream-200 hover:bg-cream-100'
                 }`}
               >
                 {st || 'All'}
@@ -59,40 +63,46 @@ export default function AdminReviews() {
         </div>
 
         {loading ? (
-          <div className="glass-card h-64 animate-pulse" />
+          <div className="bg-white border border-cream-200 rounded-2xl p-6 h-64 animate-pulse shadow-sm" />
         ) : reviews.length === 0 ? (
-          <div className="glass-card p-12 text-center text-gray-400 text-sm">
+          <div className="bg-white border border-cream-200 rounded-2xl p-12 text-center text-ink-500 text-sm shadow-sm">
             No {filter} reviews found.
           </div>
         ) : (
           <div className="space-y-4">
             {reviews.map((r) => (
-              <div key={r.review_id} className="glass-card p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div key={r.review_id} className="bg-white border border-cream-200 rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow">
                 <div className="space-y-2">
                   <div className="flex items-center gap-3">
-                    <span className="font-semibold text-white text-base">{r.product_name}</span>
+                    <span className="font-bold text-ink-900 text-base">{r.product_name}</span>
                     <StarRating rating={r.rating} />
-                    <span className={`badge ${
-                      r.status === 'Approved' ? 'badge-success' :
-                      r.status === 'Rejected' ? 'badge-danger' : 'badge-warning'
+                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${
+                      r.status === 'Approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                      r.status === 'Rejected' ? 'bg-red-50 text-red-700 border-red-200' : 'bg-amber-50 text-amber-700 border-amber-200'
                     }`}>
                       {r.status}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-300">"{r.review}"</p>
-                  <p className="text-xs text-gray-500">
-                    Submitted by <strong className="text-gray-400">{r.customer_name}</strong> on {new Date(r.created_at).toLocaleDateString()}
+                  <p className="text-sm text-ink-700">"{r.review}"</p>
+                  <p className="text-xs text-ink-500">
+                    Submitted by <strong className="text-ink-800">{r.customer_name}</strong> on {new Date(r.created_at).toLocaleDateString()}
                   </p>
                 </div>
 
                 <div className="flex items-center gap-2">
                   {r.status !== 'Approved' && (
-                    <button onClick={() => handleModerate(r.review_id, 'Approved')} className="btn-success py-1.5 px-3 text-xs">
+                    <button 
+                      onClick={() => handleModerate(r.review_id, 'Approved')} 
+                      className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors"
+                    >
                       Approve
                     </button>
                   )}
                   {r.status !== 'Rejected' && (
-                    <button onClick={() => handleModerate(r.review_id, 'Rejected')} className="btn-danger py-1.5 px-3 text-xs">
+                    <button 
+                      onClick={() => handleModerate(r.review_id, 'Rejected')} 
+                      className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition-colors"
+                    >
                       Reject
                     </button>
                   )}
